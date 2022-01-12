@@ -1,3 +1,12 @@
 <resources>
+
+    <!--    App     -->
     <string name="app_name">AndersenHomeworks</string>
+
+    <!--    MainActivity        -->
+    <string name="activityMain_btnCount_title">Count</string>
+    <string name="activityMain_btnToast_title">Toast</string>
+    <string name="activityMain_tvCount_text">0</string>
+    <string name="activityMain_toastMessage">Hello Toast!</string>
+
 </resources>

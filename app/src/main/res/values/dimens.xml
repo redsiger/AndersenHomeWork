@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <!--    App     -->
+    <dimen name="app_padding">16dp</dimen>
+
+    <!--    MainActivity        -->
+    <dimen name="activityMain_tvCount_textSize">160sp</dimen>
+</resources>
