@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/activityLesson1_2"
+        android:id="@+id/activityLessons1_2Launch_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -17,14 +17,14 @@
         />
 
     <Button
-        android:id="@+id/activityLesson3Part1"
+        android:id="@+id/activityLesson3Part1Launch_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/activityMain_btnLesson3Part1_title" />
 
     <Button
-        android:id="@+id/activityLesson3Part2"
+        android:id="@+id/activityLesson3Part2Launch_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

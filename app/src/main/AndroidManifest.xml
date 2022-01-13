@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.androidschool.andersenhomeworks">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -26,12 +27,11 @@
             android:label="@string/activityLesson1_2_label">
         </activity>
 
-<!--        &lt;!&ndash;        ActivityLesson3        &ndash;&gt;-->
-<!--        <activity-->
-<!--            android:name=".lessons1_2.ActivityLesson1_2"-->
-<!--            >-->
-
-<!--        </activity>-->
+        <!--        ActivityLesson3Part1        -->
+        <activity
+            android:name=".lesson3.part1.ActivityLesson3Part1"
+            android:label="@string/activityLesson3_part1_label">
+        </activity>
 
     </application>
 
