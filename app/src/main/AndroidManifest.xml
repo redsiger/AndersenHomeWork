@@ -9,15 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndersenHomeworks">
+
+        <!--        MainActivity        -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--        ActivityLesson1_2       -->
+        <activity
+            android:name=".lessons1_2.ActivityLessons1_2"
+            android:label="@string/activityLesson1_2_label">
+        </activity>
+
+<!--        &lt;!&ndash;        ActivityLesson3        &ndash;&gt;-->
+<!--        <activity-->
+<!--            android:name=".lessons1_2.ActivityLesson1_2"-->
+<!--            >-->
+
+<!--        </activity>-->
+
     </application>
 
 </manifest>

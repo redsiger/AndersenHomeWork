@@ -4,9 +4,15 @@
     <string name="app_name">AndersenHomeworks</string>
 
     <!--    MainActivity        -->
-    <string name="activityMain_btnCount_title">Count</string>
-    <string name="activityMain_btnToast_title">Toast</string>
-    <string name="activityMain_tvCount_text">0</string>
-    <string name="activityMain_toastMessage">Hello Toast!</string>
+    <string name="activityMain_btnLesson1_2_title">Lessons 1,2</string>
+    <string name="activityMain_btnLesson3Part1_title">Lesson 3 (Img loading)</string>
+    <string name="activityMain_btnLesson3Part2_title">Lesson 3 (Country flags)</string>
+
+    <!--    ActivityLesson1_2       -->
+    <string name="activityLesson1_2_label">Lessons 1,2</string>
+    <string name="activityLesson1_2_btnCount_title">Count</string>
+    <string name="activityLesson1_2_btnToast_title">Toast</string>
+    <string name="activityLesson1_2_tvCount_text">0</string>
+    <string name="activityLesson1_2_toastMessage">Hello Toast!</string>
 
 </resources>

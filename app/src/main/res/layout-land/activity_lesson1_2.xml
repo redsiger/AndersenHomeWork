@@ -5,35 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/app_padding"
-    tools:context=".MainActivity">
+    tools:context=".lessons1_2.ActivityLessons1_2">
 
     <Button
-        android:id="@+id/activityMain_btnToast"
+        android:id="@+id/activityLesson1_2_btnToast"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="@string/activityMain_btnToast_title"
+        android:text="@string/activityLesson1_2_btnToast_title"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/activityMain_tvCount"
+        android:id="@+id/activityLesson1_2_tvCount"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/app_padding"
-        android:text="@string/activityMain_tvCount_text"
+        android:text="@string/activityLesson1_2_tvCount_text"
         android:textSize="@dimen/activityMain_tvCount_textSize"
         android:textStyle="bold"
         android:gravity="center"
         android:background="@color/teal_200"
-        app:layout_constraintStart_toEndOf="@id/activityMain_btnCount"
+        app:layout_constraintStart_toEndOf="@id/activityLesson1_2_btnCount"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
-        android:id="@+id/activityMain_btnCount"
+        android:id="@+id/activityLesson1_2_btnCount"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text="@string/activityMain_btnCount_title"
+        android:text="@string/activityLesson1_2_btnCount_title"
         android:layout_marginStart="@dimen/app_padding"
-        app:layout_constraintStart_toEndOf="@id/activityMain_btnToast"
+        app:layout_constraintStart_toEndOf="@id/activityLesson1_2_btnToast"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

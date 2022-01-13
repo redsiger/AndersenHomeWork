@@ -1,69 +1,41 @@
 package com.example.androidschool.andersenhomeworks
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.androidschool.andersenhomeworks.databinding.ActivityMainBinding
+import com.example.androidschool.andersenhomeworks.lessons1_2.ActivityLessons1_2
 
-val MAIN_ACTIVITY_TAG = MainActivity::class.java.name
-val MAIN_ACTIVITY_COUNTER = "MAIN_ACTIVITY_COUNTER"
+class MainActivity: AppCompatActivity() {
 
-class MainActivity : AppCompatActivity() {
-
-    private var mCount = 0
-    private val tvCount by lazy { findViewById<TextView>(R.id.activityMain_tvCount) }
-    private val btnCount by lazy { findViewById<Button>(R.id.activityMain_btnCount) }
-    private val btnToast by lazy { findViewById<Button>(R.id.activityMain_btnToast) }
+    private lateinit var _binding: ActivityMainBinding
+    private val mBinding get() = _binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = mBinding.root
+        setContentView(view)
 
-        Log.v(MAIN_ACTIVITY_TAG, "Hello World! from verbose log")
-        Log.d(MAIN_ACTIVITY_TAG, "Hello World! from debug log")
-        Log.i(MAIN_ACTIVITY_TAG, "Hello world! from info log")
-        Log.w(MAIN_ACTIVITY_TAG, "Hello world! from warn log")
-        Log.e(MAIN_ACTIVITY_TAG, "Hello world! from error log")
+        initButtons()
+    }
 
-        savedInstanceState?.let {
-            mCount = it.getInt(MAIN_ACTIVITY_COUNTER)
-            setCount(tvCount)
+    private fun initButtons() {
+        initLessons1_2Button()
+        initLesson3Part1Button()
+    }
+
+    private fun initLessons1_2Button() {
+        mBinding.activityLesson12.setOnClickListener {
+            val intent = Intent(this, ActivityLessons1_2::class.java)
+            startActivity(intent)
         }
-        fundamentals_1_2()
     }
 
-    /**
-     * Codelab Fundamentals 1.2
-     */
-    private fun fundamentals_1_2() {
-
-        btnToast.setOnClickListener {
-            showToast()
+    private fun initLesson3Part1Button() {
+        mBinding.activityLesson12.setOnClickListener {
+            val intent = Intent(this, ActivityLessons1_2::class.java)
+            startActivity(intent)
         }
-
-        btnCount.setOnClickListener {
-            countUp()
-            setCount(tvCount)
-        }
-
-    }
-
-    private fun showToast() {
-        Toast.makeText(this, R.string.activityMain_toastMessage, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun countUp() {
-        mCount++
-    }
-
-    private fun setCount(view: TextView) {
-        view.text = mCount.toString()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(MAIN_ACTIVITY_COUNTER, mCount)
     }
 }
