@@ -1,4 +1,4 @@
-# Andersen HomeWorks
+# Andersen HomeWork
 
 ## Overview
 A repository for doing and storing the Andersen homeworks
