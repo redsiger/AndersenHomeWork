@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="none"
+    android:background="@color/teal_200"
+    android:padding="@dimen/app_padding"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/flag_austria"/>
+        <TextView
+            android:id="@+id/austria"
+            android:text="@string/austria"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_poland"/>
+        <TextView
+            android:id="@+id/poland"
+            android:text="@string/poland"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_italy"/>
+        <TextView
+            android:id="@+id/italy"
+            android:text="@string/italy"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_colombia"/>
+        <TextView
+            android:id="@+id/colombia"
+            android:text="@string/colombia"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_madagascar"/>
+        <TextView
+            android:id="@+id/madagasсar"
+            android:text="@string/madagasсar"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_thailand"/>
+        <TextView
+            android:id="@+id/thailand"
+            android:text="@string/thailand"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_denmark"/>
+        <TextView
+            android:id="@+id/denmark"
+            android:text="@string/denmark"
+            style="@style/FlagTitle"/>
+
+        <include layout="@layout/flag_switzerland"/>
+        <TextView
+            android:id="@+id/switzerland"
+            android:text="@string/switzerland"
+            style="@style/FlagTitle"/>
+
+    </LinearLayout>
+
+</ScrollView>

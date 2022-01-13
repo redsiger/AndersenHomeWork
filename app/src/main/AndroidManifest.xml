@@ -33,6 +33,12 @@
             android:label="@string/activityLesson3_part1_label">
         </activity>
 
+        <!--        ActivityLesson3Part2        -->
+        <activity
+            android:name=".lesson3.part2.ActivityLesson3Part2"
+            android:label="@string/activityLesson3_part2_label">
+        </activity>
+
     </application>
 
 </manifest>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/flag_height">
+
+    <ImageView
+        style="@style/FlagLineHorizontal"
+        android:background="@color/red"/>
+
+    <ImageView
+        style="@style/FlagLineHorizontal"
+        android:background="@color/white"/>
+
+    <ImageView
+        style="@style/FlagLineHorizontal"
+        android:layout_weight="2"
+        android:background="@color/blue"/>
+
+    <ImageView
+        style="@style/FlagLineHorizontal"
+        android:background="@color/white"/>
+
+    <ImageView
+        style="@style/FlagLineHorizontal"
+        android:background="@color/red"/>
+
+</LinearLayout>

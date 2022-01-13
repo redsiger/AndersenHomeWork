@@ -6,4 +6,8 @@
 
     <!--    MainActivity        -->
     <dimen name="activityMain_tvCount_textSize">160sp</dimen>
+
+    <!--    ActivityLesson3Part2        -->
+    <dimen name="flag_height">200dp</dimen>
+
 </resources>

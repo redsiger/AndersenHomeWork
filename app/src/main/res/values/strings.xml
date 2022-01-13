@@ -15,9 +15,20 @@
     <string name="activityLesson1_2_tvCount_text">0</string>
     <string name="activityLesson1_2_toastMessage">Hello Toast!</string>
 
-    <!--    ActivityLesson3       -->
+    <!--    ActivityLesson3Part1       -->
     <string name="activityLesson3_part1_label">Lesson 3 Part 1</string>
     <string name="activityLesson3_part1_btnLoad_title">Load</string>
     <string name="activityLesson3_part1_imgInputEmpty">You need to enter an imgUrl</string>
+
+    <!--    ActivityLesson3Part2       -->
+    <string name="activityLesson3_part2_label">Lesson 3 Part 2</string>
+    <string name="austria">Austria</string>
+    <string name="poland">Poland</string>
+    <string name="italy">Italy</string>
+    <string name="colombia">Colombia</string>
+    <string name="madagasсar">Madagasсar</string>
+    <string name="thailand">Thailand</string>
+    <string name="denmark">Denmark</string>
+    <string name="switzerland">Switzerland</string>
 
 </resources>
