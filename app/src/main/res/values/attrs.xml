@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ClockView">
+        <attr name="watchface_color" format="color"/>
+        <attr name="watchface_thickness" format="dimension"/>
+        <attr name="hourHand_color" format="color"/>
+        <attr name="hourHand_thickness" format="dimension"/>
+        <attr name="minuteHand_color" format="color"/>
+        <attr name="minuteHand_thickness" format="dimension"/>
+        <attr name="secondHand_color" format="color"/>
+        <attr name="secondHand_thickness" format="dimension"/>
+    </declare-styleable>
+</resources>

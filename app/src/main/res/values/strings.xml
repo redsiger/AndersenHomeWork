@@ -30,5 +30,9 @@
     <string name="thailand">Thailand</string>
     <string name="denmark">Denmark</string>
     <string name="switzerland">Switzerland</string>
+    <string name="activityMain_btnLesson4_title">Lesson 4 (Custom view)</string>
+
+    <!--    ActivityLesson4     -->
+    <string name="activityLesson4_label">Lesson 4</string>
 
 </resources>

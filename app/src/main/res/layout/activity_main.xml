@@ -30,4 +30,11 @@
         android:layout_gravity="center"
         android:text="@string/activityMain_btnLesson3Part2_title" />
 
+    <Button
+        android:id="@+id/activityLesson4Launch_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/activityMain_btnLesson4_title" />
+
 </LinearLayout>
