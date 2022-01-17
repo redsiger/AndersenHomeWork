@@ -3,21 +3,21 @@ package com.example.androidschool.andersenhomeworks.lesson4
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.core.graphics.withSave
 import com.example.androidschool.andersenhomeworks.R
+import kotlinx.coroutines.*
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 class ClockView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    defStyleRes: Int = 0
-): View(context, attrs, defStyleAttr, defStyleRes) {
+    defStyleRes: Int = 0,
+): View(context, attrs, defStyleAttr, defStyleRes), CoroutineScope {
 
     companion object {
-        const val DEFAULT_SIZE = 40
         const val DEFAULT_WATCHFACE_THICKNESS = 2
         const val DEFAULT_HOUR_HAND_THICKNESS = 2
         const val DEFAULT_MINUTE_HAND_THICKNESS = 2
@@ -42,14 +42,13 @@ class ClockView @JvmOverloads constructor(
     private var watchfaceThickness: Float = context.dpToPx(DEFAULT_WATCHFACE_THICKNESS) * 2
     private var watchfaceRadius = (width / 2f) - watchfaceThickness
 
-    private var watchfaceCirclePaint = Paint().apply {
+    private var watchfacePaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
     }
-    private var watchfaceDotsPaint = Paint().apply {
+    private var watchfaceCenterDotPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        strokeWidth = DEFAULT_DOT_THICKNESS.toFloat()
         color = DEFAULT_DOT_COLOR
     }
     private var hourHandPaint = Paint().apply {
@@ -65,46 +64,81 @@ class ClockView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + Job()
+
+    private var clockRunningJob: Job? = null
+    private var isRunning = false
+
     init {
         attrs?.let {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ClockView)
 
-            watchfaceCirclePaint.apply {
-                strokeWidth = typedArray.getDimension(R.styleable.ClockView_watchface_thickness, context.dpToPx(DEFAULT_WATCHFACE_THICKNESS))
-                color = typedArray.getColor(R.styleable.ClockView_watchface_color, DEFAULT_WATCHFACE_COLOR)
+            watchfacePaint.apply {
+                strokeWidth = typedArray.getDimension(
+                    R.styleable.ClockView_watchface_thickness,
+                    context.dpToPx(DEFAULT_WATCHFACE_THICKNESS)
+                )
+                color = typedArray.getColor(
+                    R.styleable.ClockView_watchface_color,
+                    DEFAULT_WATCHFACE_COLOR
+                )
+            }
+
+            watchfaceCenterDotPaint.apply {
+                strokeWidth = typedArray.getDimension(
+                    R.styleable.ClockView_hourHand_thickness,
+                    context.dpToPx(DEFAULT_DOT_THICKNESS)
+                )
+                color = typedArray.getColor(
+                    R.styleable.ClockView_watchface_color,
+                    DEFAULT_WATCHFACE_COLOR
+                )
             }
 
             hourHandPaint.apply {
-                strokeWidth = typedArray.getDimension(R.styleable.ClockView_hourHand_thickness, context.dpToPx(DEFAULT_HOUR_HAND_THICKNESS))
-                color = typedArray.getColor(R.styleable.ClockView_hourHand_color, DEFAULT_HOUR_HAND_COLOR)
+                strokeWidth = typedArray.getDimension(
+                    R.styleable.ClockView_hourHand_thickness,
+                    context.dpToPx(DEFAULT_HOUR_HAND_THICKNESS)
+                )
+                color = typedArray.getColor(
+                    R.styleable.ClockView_hourHand_color,
+                    DEFAULT_HOUR_HAND_COLOR
+                )
             }
 
             minuteHandPaint.apply {
-                strokeWidth = typedArray.getDimension(R.styleable.ClockView_minuteHand_thickness, context.dpToPx(DEFAULT_MINUTE_HAND_THICKNESS))
-                color = typedArray.getColor(R.styleable.ClockView_minuteHand_color, DEFAULT_MINUTE_HAND_COLOR)
+                strokeWidth = typedArray.getDimension(
+                    R.styleable.ClockView_minuteHand_thickness,
+                    context.dpToPx(DEFAULT_MINUTE_HAND_THICKNESS)
+                )
+                color = typedArray.getColor(
+                    R.styleable.ClockView_minuteHand_color,
+                    DEFAULT_MINUTE_HAND_COLOR
+                )
             }
 
             secondHandPaint.apply {
-                strokeWidth = typedArray.getDimension(R.styleable.ClockView_secondHand_thickness, context.dpToPx(DEFAULT_SECOND_HAND_THICKNESS))
-                color = typedArray.getColor(R.styleable.ClockView_secondHand_color, DEFAULT_SECOND_HAND_COLOR)
+                strokeWidth = typedArray.getDimension(
+                    R.styleable.ClockView_secondHand_thickness,
+                    context.dpToPx(DEFAULT_SECOND_HAND_THICKNESS)
+                )
+                color = typedArray.getColor(
+                    R.styleable.ClockView_secondHand_color,
+                    DEFAULT_SECOND_HAND_COLOR
+                )
             }
 
             typedArray.recycle()
         }
     }
 
-    private fun resolveDefaultSize(spec: Int): Int {
-        return when (MeasureSpec.getMode(spec)) {
-            MeasureSpec.UNSPECIFIED -> context.dpToPx(DEFAULT_SIZE).toInt()
-            MeasureSpec.EXACTLY -> MeasureSpec.getSize(spec)
-            MeasureSpec.AT_MOST -> MeasureSpec.getSize(spec)
-            else -> MeasureSpec.getSize(spec)
-        }
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(resolveDefaultSize(widthMeasureSpec), resolveDefaultSize(heightMeasureSpec))
+        setMeasuredDimension(
+            resolveDefaultSize(widthMeasureSpec, heightMeasureSpec),
+            resolveDefaultSize(widthMeasureSpec, heightMeasureSpec)
+        )
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -114,39 +148,78 @@ class ClockView @JvmOverloads constructor(
 
         canvas?.apply {
             initWatchface(this, cx, cy)
-            drawStrokes(this, watchfaceDotsPaint, watchfaceRadius)
-            drawCircle(0f, 0f, watchfaceRadius, watchfaceCirclePaint)
+            drawStrokes(this, watchfacePaint, watchfaceRadius)
+            drawCircle(0f, 0f, watchfaceRadius, watchfacePaint)
             drawHourHand(this, hourHandPaint, currentHour, currentMinutes)
             drawMinuteHand(this, minuteHandPaint, currentMinutes)
             drawSecondHand(this, secondHandPaint, currentSeconds)
-            drawCircle(0f, 0f, watchfaceThickness, watchfaceDotsPaint)
+            drawCircle(0f, 0f, watchfaceThickness * 2, watchfaceCenterDotPaint)
         }
-
-        update()
-        Log.e("DRAW", "onDraw")
     }
 
-    private fun update() {
-        updateTime()
-        postInvalidateDelayed(1000)
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+
+        handHourLength = width / 4f
+        minuteHourLength = width / 3f
+        secondHourLength = width / 2f
+        watchfaceRadius = width / 2f - watchfaceThickness * 2
     }
 
-    private fun updateTime() {
-        if (currentSeconds < 60) {
-            currentSeconds++
-        } else {
-            currentSeconds = 1
-            if (currentMinutes < 60) {
-                currentMinutes++
-            } else {
-                currentMinutes = 1
-                if (currentHour < 12) {
-                    currentHour++
-                } else {
-                    currentHour = 1
-                }
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        start()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        cancel()
+    }
+
+    /**
+     * Sets hands in motion
+     */
+    fun start() {
+        if (isRunning) return
+        clockRunningJob = launch {
+            while (true) {
+                val calendar = Calendar.getInstance()
+                setTime(
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    calendar.get(Calendar.SECOND)
+                )
+                yield()
             }
         }
+        isRunning = true
+    }
+
+    /**
+     * Stops hands
+     */
+    fun stop() {
+        clockRunningJob?.cancel()
+        clockRunningJob = null
+        isRunning = false
+    }
+
+    /**
+     * Sets time and force a view to draw
+     */
+    private fun setTime(hours: Int, minutes: Int, seconds: Int) {
+        currentHour = hours
+        currentMinutes = minutes
+        currentSeconds = seconds
+        invalidate()
+    }
+
+    private fun resolveDefaultSize(widthSpec: Int, heightSpec: Int): Int {
+        val width = MeasureSpec.getSize(widthSpec)
+        val height = MeasureSpec.getSize(heightSpec)
+        return if (width < height) {
+            width
+        } else height
     }
 
     /**
@@ -163,7 +236,7 @@ class ClockView @JvmOverloads constructor(
      * Draws hour strokes on watchface
      */
     private fun drawStrokes(canvas: Canvas, paint: Paint, startY: Float) {
-        val endY = startY - (paint.strokeWidth * 5)
+        val endY = startY - (paint.strokeWidth * 3)
         canvas.withSave {
             for (i in 0..11) {
                 this.drawLine(0f, startY, 0f, endY, paint)
@@ -178,7 +251,7 @@ class ClockView @JvmOverloads constructor(
     private fun drawHourHand(canvas: Canvas, paint: Paint, hours: Int, minutes: Int) {
         canvas.withSave {
             this.rotate(hours * -30f + minutes * -0.5f)
-            this.drawLine(0f, 0f, 0f, height / 4f, paint)
+            this.drawLine(0f, 0f, 0f, watchfaceRadius / 2f, paint)
         }
     }
 
@@ -188,7 +261,7 @@ class ClockView @JvmOverloads constructor(
     private fun drawMinuteHand(canvas: Canvas, paint: Paint, minutes: Int) {
         canvas.withSave {
             this.rotate(minutes * -6f)
-            this.drawLine(0f, 0f, 0f, height / 3f, paint)
+            this.drawLine(0f, 0f, 0f, watchfaceRadius / 1.5f, paint)
         }
     }
 
@@ -198,17 +271,8 @@ class ClockView @JvmOverloads constructor(
     private fun drawSecondHand(canvas: Canvas, paint: Paint, seconds: Int) {
         canvas.withSave {
             this.rotate(seconds * -6f)
-            this.drawLine(0f, 0f, 0f, height / 2.5f, paint)
+            this.drawLine(0f, 0f, 0f, watchfaceRadius / 1.2f, paint)
         }
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        handHourLength = width / 4f
-        minuteHourLength = width / 3f
-        secondHourLength = width / 2f
-        watchfaceRadius = width / 2f - watchfaceThickness * 2
     }
 }
 

@@ -34,5 +34,7 @@
 
     <!--    ActivityLesson4     -->
     <string name="activityLesson4_label">Lesson 4</string>
+    <string name="activityLesson4_startBtn_title">start</string>
+    <string name="activityLesson4_stopBtn_title">stop</string>
 
 </resources>

@@ -36,3 +36,9 @@ Using standard containers create flags of following countries:
 <li>Switzerland
 
 Only colors, View and containers listed above are allowed.
+
+## Lesson 4
+Tasks:
+<li>Create a custom view for showing time in form of round clocks. 
+<li>The second, minute and hour hands should work.
+<li>Add the ability to change the colors of the hands, as well as their size, from xml using attributes.
