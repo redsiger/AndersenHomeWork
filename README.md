@@ -1,4 +1,4 @@
-# Andersen HomeWorks
+# Andersen HomeWork
 
 ## Overview
 A repository for doing and storing the Andersen homeworks
@@ -36,9 +36,12 @@ Using standard containers create flags of following countries:
 <li>Switzerland
 
 Only colors, View and containers listed above are allowed.
+<<<<<<< HEAD
 
 ## Lesson 4
 Tasks:
 <li>Create a custom view for showing time in form of round clocks. 
 <li>The second, minute and hour hands should work.
 <li>Add the ability to change the colors of the hands, as well as their size, from xml using attributes.
+=======
+>>>>>>> 1add7f2d72322ca8f41abce78daa460234f9e212
