@@ -6,69 +6,68 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.withSave
 import com.example.androidschool.andersenhomeworks.R
-import kotlinx.coroutines.*
+import com.example.androidschool.andersenhomeworks.lesson4.util.dpToPx
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 class ClockView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
     defStyleRes: Int = 0,
-): View(context, attrs, defStyleAttr, defStyleRes), CoroutineScope {
+): View(context, attrs, defStyleAttr, defStyleRes) {
 
     companion object {
         const val DEFAULT_WATCHFACE_THICKNESS = 2
         const val DEFAULT_HOUR_HAND_THICKNESS = 2
         const val DEFAULT_MINUTE_HAND_THICKNESS = 2
         const val DEFAULT_SECOND_HAND_THICKNESS = 2
-        const val DEFAULT_DOT_THICKNESS = 5
         const val DEFAULT_WATCHFACE_COLOR = Color.BLACK
         const val DEFAULT_HOUR_HAND_COLOR = Color.DKGRAY
         const val DEFAULT_MINUTE_HAND_COLOR = Color.BLUE
         const val DEFAULT_SECOND_HAND_COLOR = Color.RED
-        const val DEFAULT_DOT_COLOR = Color.BLACK
     }
 
-    private val calendar = Calendar.getInstance()
-    private var currentSeconds = calendar.get(Calendar.SECOND)
-    private var currentMinutes = calendar.get(Calendar.MINUTE)
-    private var currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+    private var currentSeconds = 0
 
-    private var handHourLength = 5f
-    private var minuteHourLength = 5f
-    private var secondHourLength = 5f
 
-    private var watchfaceThickness: Float = context.dpToPx(DEFAULT_WATCHFACE_THICKNESS) * 2
-    private var watchfaceRadius = (width / 2f) - watchfaceThickness
+    private var currentMinutes = 0
+    private var currentHour = 0
+    private var cX = 0f
 
+    private var cY = 0f
+    private var hourHandLength = 0f
+
+    private var minuteHandLength = 0f
+    private var secondHandLength = 0f
+    private var watchfaceRadius = 0f
+
+    // Paints
     private var watchfacePaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
+        color = DEFAULT_WATCHFACE_COLOR
+        strokeWidth = DEFAULT_WATCHFACE_THICKNESS.toFloat()
     }
-    private var watchfaceCenterDotPaint = Paint().apply {
+    private var centerDotPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
-        color = DEFAULT_DOT_COLOR
+        color = DEFAULT_WATCHFACE_COLOR
     }
     private var hourHandPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
+        color = DEFAULT_HOUR_HAND_COLOR
     }
     private var minuteHandPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
+        color = DEFAULT_MINUTE_HAND_COLOR
     }
     private var secondHandPaint = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL
+        color = DEFAULT_SECOND_HAND_COLOR
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + Job()
-
-    private var clockRunningJob: Job? = null
-    private var isRunning = false
 
     init {
         attrs?.let {
@@ -85,11 +84,7 @@ class ClockView @JvmOverloads constructor(
                 )
             }
 
-            watchfaceCenterDotPaint.apply {
-                strokeWidth = typedArray.getDimension(
-                    R.styleable.ClockView_hourHand_thickness,
-                    context.dpToPx(DEFAULT_DOT_THICKNESS)
-                )
+            centerDotPaint.apply {
                 color = typedArray.getColor(
                     R.styleable.ClockView_watchface_color,
                     DEFAULT_WATCHFACE_COLOR
@@ -134,83 +129,28 @@ class ClockView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         setMeasuredDimension(
             resolveDefaultSize(widthMeasureSpec, heightMeasureSpec),
             resolveDefaultSize(widthMeasureSpec, heightMeasureSpec)
         )
     }
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-        val cx = width / 2f
-        val cy = height / 2f
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        updateDimensions()
+    }
 
+    override fun onDraw(canvas: Canvas?) {
+        updateTime()
         canvas?.apply {
-            initWatchface(this, cx, cy)
+            initWatchface(this, cX, cY)
+            drawWatchface(this, watchfacePaint, watchfaceRadius)
             drawStrokes(this, watchfacePaint, watchfaceRadius)
-            drawCircle(0f, 0f, watchfaceRadius, watchfacePaint)
             drawHourHand(this, hourHandPaint, currentHour, currentMinutes)
             drawMinuteHand(this, minuteHandPaint, currentMinutes)
             drawSecondHand(this, secondHandPaint, currentSeconds)
-            drawCircle(0f, 0f, watchfaceThickness * 2, watchfaceCenterDotPaint)
+            drawCenterDot(this, centerDotPaint, watchfacePaint.strokeWidth)
         }
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        handHourLength = width / 4f
-        minuteHourLength = width / 3f
-        secondHourLength = width / 2f
-        watchfaceRadius = width / 2f - watchfaceThickness * 2
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        start()
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        cancel()
-    }
-
-    /**
-     * Sets hands in motion
-     */
-    fun start() {
-        if (isRunning) return
-        clockRunningJob = launch {
-            while (true) {
-                val calendar = Calendar.getInstance()
-                setTime(
-                    calendar.get(Calendar.HOUR_OF_DAY),
-                    calendar.get(Calendar.MINUTE),
-                    calendar.get(Calendar.SECOND)
-                )
-                yield()
-            }
-        }
-        isRunning = true
-    }
-
-    /**
-     * Stops hands
-     */
-    fun stop() {
-        clockRunningJob?.cancel()
-        clockRunningJob = null
-        isRunning = false
-    }
-
-    /**
-     * Sets time and force a view to draw
-     */
-    private fun setTime(hours: Int, minutes: Int, seconds: Int) {
-        currentHour = hours
-        currentMinutes = minutes
-        currentSeconds = seconds
         invalidate()
     }
 
@@ -222,6 +162,22 @@ class ClockView @JvmOverloads constructor(
         } else height
     }
 
+    private fun updateDimensions() {
+        cX = width / 2f
+        cY = height / 2f
+        hourHandLength = width / 4f
+        minuteHandLength = width / 3f
+        secondHandLength = width / 2f
+        watchfaceRadius = width / 2f - watchfacePaint.strokeWidth * 2
+    }
+
+    private fun updateTime() {
+        val calendar = Calendar.getInstance()
+        currentSeconds = calendar.get(Calendar.SECOND)
+        currentMinutes = calendar.get(Calendar.MINUTE)
+        currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+    }
+
     /**
      * Changes default canvas's coordinate system on comfortable for clock drawing
      */
@@ -230,6 +186,13 @@ class ClockView @JvmOverloads constructor(
             scale(1f, -1f, cx, cy)
             translate(cx, cy)
         }
+    }
+
+    /**
+     * Draws a watchface without strokes
+     */
+    private fun drawWatchface(canvas: Canvas, watchfacePaint: Paint, rad: Float) {
+        canvas.drawCircle(0f, 0f, rad, watchfacePaint)
     }
 
     /**
@@ -274,8 +237,11 @@ class ClockView @JvmOverloads constructor(
             this.drawLine(0f, 0f, 0f, watchfaceRadius / 1.2f, paint)
         }
     }
-}
 
-fun Context.dpToPx(dp: Int): Float {
-    return dp.toFloat() * this.resources.displayMetrics.density
+    /**
+     * Draws center dot
+     */
+    private fun drawCenterDot(canvas: Canvas, centerDotPaint: Paint, rad: Float) {
+        canvas.drawCircle(0f, 0f, rad, centerDotPaint)
+    }
 }
