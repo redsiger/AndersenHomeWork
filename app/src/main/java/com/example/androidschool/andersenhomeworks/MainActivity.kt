@@ -7,6 +7,7 @@ import com.example.androidschool.andersenhomeworks.databinding.ActivityMainBindi
 import com.example.androidschool.andersenhomeworks.lesson3.part1.ActivityLesson3Part1
 import com.example.androidschool.andersenhomeworks.lesson3.part2.ActivityLesson3Part2
 import com.example.androidschool.andersenhomeworks.lesson4.ActivityLesson4
+import com.example.androidschool.andersenhomeworks.lesson5.ActivityLesson5
 import com.example.androidschool.andersenhomeworks.lessons1_2.ActivityLessons1_2
 
 class MainActivity: AppCompatActivity() {
@@ -28,6 +29,7 @@ class MainActivity: AppCompatActivity() {
         initLesson3Part1Button()
         initLesson3Part2Button()
         initLesson4Button()
+        initLesson5Button()
     }
 
     private fun initLessons1_2Button() {
@@ -54,6 +56,13 @@ class MainActivity: AppCompatActivity() {
     private fun initLesson4Button() {
         mBinding.activityLesson4LaunchBtn.setOnClickListener {
             val intent = Intent(this, ActivityLesson4::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun initLesson5Button() {
+        mBinding.activityLesson5LaunchBtn.setOnClickListener {
+            val intent = Intent(this, ActivityLesson5::class.java)
             startActivity(intent)
         }
     }

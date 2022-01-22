@@ -10,4 +10,8 @@
     <!--    ActivityLesson3Part2        -->
     <dimen name="flag_height">200dp</dimen>
 
+    <!--    ActivityLesson5     -->
+    <dimen name="contact_main_padding">8dp</dimen>
+    <dimen name="contact_line_padding">10dp</dimen>
+
 </resources>
