@@ -12,13 +12,13 @@ import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson5Binding
 import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson5LandBinding
 import com.example.androidschool.andersenhomeworks.lesson5.ContactDetailsFragment.Companion.CONTACT_DETAILS_FRAGMENT_TAG
+import com.example.androidschool.andersenhomeworks.lesson5.ContactEditFragment.Companion.CONTACT_EDIT_FRAGMENT_TAG
 import com.example.androidschool.andersenhomeworks.lesson5.ContactsListFragment.Companion.CONTACTS_LIST_FRAGMENT_TAG
 import com.github.javafaker.Faker
 
 class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     companion object {
-        private const val ACTIVITY_LESSON5_TAG = "ACTIVITY_LESSON5_TAG"
         private const val CONTACT_LIST = "CONTACT_LIST"
     }
 
@@ -32,11 +32,21 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     private val manager: FragmentManager by lazy { supportFragmentManager }
 
     private val faker = Faker()
-    private var contactList = ArrayList<Contact>()
+    private var contactList = mutableListOf<Contact>()
     private var currentContactId = 0
+    private val repositoryListeners = mutableListOf<RepositoryListener>()
 
-    override fun itemClicked(id: Int) {
-        Log.e("LISTENER", "click on $id")
+    override fun addRepositoryListener(listener: RepositoryListener) {
+        repositoryListeners.add(listener)
+    }
+
+    private fun repositoryUpdated() {
+        repositoryListeners.forEach {
+            it.repositoryUpdated()
+        }
+    }
+
+    override fun onItemClick(id: Int) {
         when {
             isTablet -> {
                 if (id != currentContactId) {
@@ -45,19 +55,41 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
                 }
             }
             else -> {
-                addDetailFragment(contactList[id], R.id.fragment_container)
+                addDetailFragment(id, R.id.fragment_container)
             }
         }
+    }
 
+    override fun onItemEdit(id: Int) {
+        when {
+            isTablet -> {
+                addEditFragment(contactList[id])
+            }
+            else -> {
+                addEditFragment(contactList[id])
+            }
+        }
+    }
+
+    override fun getContact(id: Int): Contact {
+        return contactList[id]
+    }
+
+    override fun getContacts(): List<Contact> {
+        return contactList
+    }
+
+    override fun onItemSave(contact: Contact) {
+        contactList.removeAt(contact.id)
+        contactList.add(contact.id, contact)
+        removeEditFragment()
+        repositoryUpdated()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        when {
-            isTablet -> initTabletView()
-            else -> initPhoneView()
-        }
+        initView()
 
         savedInstanceState?.let {
             contactList = it.getParcelableArrayList(CONTACT_LIST) ?: ArrayList()
@@ -72,7 +104,7 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CONTACT_LIST, contactList)
+        outState.putParcelableArrayList(CONTACT_LIST, ArrayList(contactList))
         super.onSaveInstanceState(outState)
     }
 
@@ -91,6 +123,13 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         return contactList
     }
 
+    private fun initView() {
+        when {
+            isTablet -> initTabletView()
+            else -> initPhoneView()
+        }
+    }
+
     private fun initTabletView() {
         _tabletBinding = ActivityLesson5LandBinding.inflate(layoutInflater)
         setContentView(tabletBinding.root)
@@ -98,7 +137,7 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     private fun setTabletFragments() {
         replaceListFragment(contactList, R.id.list_fragment)
-        addDetailFragment(contactList[currentContactId], R.id.details_fragment)
+        addDetailFragment(contactList[currentContactId].id, R.id.details_fragment)
     }
 
     private fun initPhoneView() {
@@ -110,9 +149,9 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         replaceListFragment(contactList, R.id.fragment_container)
     }
 
-    private fun replaceListFragment(contactList: ArrayList<Contact>, containerViewId: Int) {
+    private fun replaceListFragment(contactList: List<Contact>, containerViewId: Int) {
         removeListFragment()
-        addListFragment(contactList, containerViewId)
+        addListFragment(containerViewId)
     }
 
     private fun removeListFragment() {
@@ -123,9 +162,8 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         }
     }
 
-    private fun addListFragment(contactList: ArrayList<Contact>, containerViewId: Int) {
-        ContactsListFragment.newInstance(contactList).apply {
-//            this.addFragmentListener(this@ActivityLesson5)
+    private fun addListFragment(containerViewId: Int) {
+        ContactsListFragment.newInstance().apply {
             manager.beginTransaction()
                 .replace(
                     containerViewId,
@@ -137,7 +175,7 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     private fun replaceDetailFragment(contact: Contact) {
         removeDetailFragment()
-        addDetailFragment(contact, R.id.details_fragment)
+        addDetailFragment(contact.id, R.id.details_fragment)
     }
 
     private fun removeDetailFragment() {
@@ -148,8 +186,8 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         }
     }
 
-    private fun addDetailFragment(contact: Contact, containerViewId: Int) {
-        ContactDetailsFragment.newInstance(contact).apply {
+    private fun addDetailFragment(contactId: Int, containerViewId: Int) {
+        ContactDetailsFragment.newInstance(contactId).apply {
             manager.beginTransaction().apply {
                 if (!isTablet) this.addToBackStack(null)
             }
@@ -157,6 +195,19 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
                     containerViewId,
                     this,
                     CONTACT_DETAILS_FRAGMENT_TAG)
+                .commit()
+        }
+    }
+
+    private fun addEditFragment(contact: Contact) {
+        ContactEditFragment.newInstance(contact).show(manager, CONTACT_EDIT_FRAGMENT_TAG)
+    }
+
+    private fun removeEditFragment() {
+        manager.findFragmentByTag(CONTACT_EDIT_FRAGMENT_TAG)?.let {
+            Log.e("YES", "$it")
+            manager.beginTransaction()
+                .remove(it)
                 .commit()
         }
     }

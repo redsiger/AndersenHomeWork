@@ -1,7 +1,6 @@
 package com.example.androidschool.andersenhomeworks.lesson5
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -10,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.FragmentContactsListBinding
 
-class ContactsListFragment: Fragment(R.layout.fragment_contacts_list) {
+class ContactsListFragment: Fragment(R.layout.fragment_contacts_list), RepositoryListener {
 
     companion object {
         const val CONTACTS_LIST_FRAGMENT_TAG = "CONTACTS_LIST_FRAGMENT_TAG"
@@ -26,37 +25,37 @@ class ContactsListFragment: Fragment(R.layout.fragment_contacts_list) {
             return fragment
         }
 
-
+        fun newInstance(): ContactsListFragment {
+            return ContactsListFragment()
+        }
     }
 
     private var _viewBinding: FragmentContactsListBinding? = null
     private val viewBinding get() = _viewBinding!!
-    private val contactList: ArrayList<Contact> by lazy {
-        arguments?.getParcelableArrayList(CONTACTS_LIST) ?: ArrayList()
-    }
-
-    private val listeners = mutableListOf<FragmentListener>()
-
     private val listener by lazy { requireActivity() as FragmentListener }
+    private val contactList get() = listener.getContacts()
+
+    override fun repositoryUpdated() {
+        refreshList(contactList)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _viewBinding = FragmentContactsListBinding.bind(view)
 
+        listener.addRepositoryListener(this)
         initList(contactList)
-        Log.e(CONTACTS_LIST_FRAGMENT_TAG, "onCreateView")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e(CONTACTS_LIST_FRAGMENT_TAG, "onDestroy")
+    private fun refreshList(contactList: List<Contact>) {
+        viewBinding.contactsList.removeAllViews()
+        initList(contactList)
     }
 
     /**
      * Populates ViewGroup by children in form of contact
      */
-    private fun initList(contactList: ArrayList<Contact>) {
-        viewBinding.contactsList
+    private fun initList(contactList: List<Contact>) {
         contactList.forEach { contact ->
             val linearLayout = viewBinding.contactsList
             val view = layoutInflater.inflate(
@@ -67,8 +66,7 @@ class ContactsListFragment: Fragment(R.layout.fragment_contacts_list) {
             fillViewByContact(view, contact)
             linearLayout.addView(view)
             view.setOnClickListener {
-//                listeners.forEach { it.itemClicked(contact.id) }
-                listener.itemClicked(contact.id)
+                listener.onItemClick(contact.id)
             }
         }
     }

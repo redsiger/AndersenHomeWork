@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.FragmentContactDetailsBinding
 
-class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details) {
+class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), RepositoryListener {
 
     companion object {
         const val CONTACT_DETAILS_FRAGMENT_TAG = "CONTACT_DETAILS_FRAGMENT_TAG"
-        private const val CONTACT = "CONTACT"
+        private const val CONTACT_ID = "CONTACT_ID"
 
-        fun newInstance(contact: Contact): ContactDetailsFragment {
+        fun newInstance(contactId: Int): ContactDetailsFragment {
             val args = Bundle()
-            args.putParcelable(CONTACT, contact)
+            args.putInt(CONTACT_ID, contactId)
 
             val fragment = ContactDetailsFragment().apply {
                 arguments = args
@@ -27,16 +26,23 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details) {
 
     private var _viewBinding: FragmentContactDetailsBinding? = null
     private val viewBinding get() = _viewBinding!!
+    private val contactId: Int by lazy {
+        arguments?.getInt(CONTACT_ID) ?: -1
+    }
 
-    private val contact: Contact by lazy {
-        arguments?.getParcelable(CONTACT) ?: Contact()
+    private val listener by lazy { requireActivity() as FragmentListener }
+
+    override fun repositoryUpdated() {
+        renderContact(listener.getContact(contactId))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _viewBinding = FragmentContactDetailsBinding.bind(view)
-        renderContact(contact)
-        Log.e(CONTACT_DETAILS_FRAGMENT_TAG, "onViewCreated, $contact")
+
+        listener.addRepositoryListener(this)
+        renderContact(listener.getContact(contactId))
+        initEditBtn()
     }
 
     private fun renderContact(contact: Contact) {
@@ -47,8 +53,9 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details) {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e(CONTACT_DETAILS_FRAGMENT_TAG, "onDestroy, $contact")
+    private fun initEditBtn() {
+        viewBinding.contactDetailsEditBtn.setOnClickListener {
+            listener.onItemEdit(contactId)
+        }
     }
 }

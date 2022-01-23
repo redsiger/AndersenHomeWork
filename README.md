@@ -43,3 +43,12 @@ Tasks:
 <li>The second, minute and hour hands should work.
 <li>Add the ability to change the colors of the hands, as well as their size, from xml using attributes.
 
+## Lesson 5
+Tasks:
+<li>Create an app, which contains 1 Activity and 2 Fragments: 1 Fragment - contact list; 2 Fragment - contact details.
+<li>A contact item includes: first name, second name, phone number.
+<li>When a contact item clicked on first fragment the second fragment appears with the contact's data
+<li>When the system back button is pressed, the 1 fragment is returned
+<li>When the 1 fragment is opened, back button pressing close the app
+<li>Add contact editing in details fragment
+<li>Add tablet mode: both fragments are display on one screen at the same time
