@@ -18,8 +18,8 @@ import com.github.javafaker.Faker
 class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     companion object {
-
-        const val CONTACTS_LIST = "CONTACTS_LIST"
+        private const val ACTIVITY_LESSON5_TAG = "ACTIVITY_LESSON5_TAG"
+        private const val CONTACT_LIST = "CONTACT_LIST"
     }
 
     private val isTablet: Boolean by lazy { this.resources.getBoolean(R.bool.isTablet) }
@@ -36,25 +36,46 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     private var currentContactId = 0
 
     override fun itemClicked(id: Int) {
-        if (id != currentContactId) {
-            currentContactId = id
-            replaceDetailFragment(contactList[currentContactId])
+        Log.e("LISTENER", "click on $id")
+        when {
+            isTablet -> {
+                if (id != currentContactId) {
+                    currentContactId = id
+                    replaceDetailFragment(contactList[currentContactId])
+                }
+            }
+            else -> {
+                addDetailFragment(contactList[id], R.id.fragment_container)
+            }
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        contactList = populateContacts(3)
 
         when {
-            isTablet -> {
-                initTablet()
-            }
-            else -> {
-                initPhone()
+            isTablet -> initTabletView()
+            else -> initPhoneView()
+        }
+
+        savedInstanceState?.let {
+            contactList = it.getParcelableArrayList(CONTACT_LIST) ?: ArrayList()
+        } ?: run {
+            contactList = populateContacts(3)
+
+            when {
+                isTablet -> setTabletFragments()
+                else -> setPhoneFragments()
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList(CONTACT_LIST, contactList)
+        super.onSaveInstanceState(outState)
+    }
+
 
     private fun populateContacts(contactsCount: Int): ArrayList<Contact> {
         val contactList = ArrayList<Contact>()
@@ -70,21 +91,28 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         return contactList
     }
 
-    private fun initTablet() {
-        Log.e("initTablet", "invoked")
+    private fun initTabletView() {
         _tabletBinding = ActivityLesson5LandBinding.inflate(layoutInflater)
         setContentView(tabletBinding.root)
-        setTabletFragments()
     }
 
     private fun setTabletFragments() {
-        addListFragment(contactList)
-        addDetailFragment(contactList[currentContactId])
+        replaceListFragment(contactList, R.id.list_fragment)
+        addDetailFragment(contactList[currentContactId], R.id.details_fragment)
     }
 
-    private fun replaceListFragment(contactList: ArrayList<Contact>) {
+    private fun initPhoneView() {
+        _phoneBinding = ActivityLesson5Binding.inflate(layoutInflater)
+        setContentView(phoneBinding.root)
+    }
+
+    private fun setPhoneFragments() {
+        replaceListFragment(contactList, R.id.fragment_container)
+    }
+
+    private fun replaceListFragment(contactList: ArrayList<Contact>, containerViewId: Int) {
         removeListFragment()
-        addListFragment(contactList)
+        addListFragment(contactList, containerViewId)
     }
 
     private fun removeListFragment() {
@@ -95,12 +123,12 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         }
     }
 
-    private fun addListFragment(contactList: ArrayList<Contact>) {
+    private fun addListFragment(contactList: ArrayList<Contact>, containerViewId: Int) {
         ContactsListFragment.newInstance(contactList).apply {
-            this.addFragmentListener(this@ActivityLesson5)
+//            this.addFragmentListener(this@ActivityLesson5)
             manager.beginTransaction()
-                .add(
-                    R.id.list_fragment,
+                .replace(
+                    containerViewId,
                     this,
                     CONTACTS_LIST_FRAGMENT_TAG)
                 .commit()
@@ -109,7 +137,7 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     private fun replaceDetailFragment(contact: Contact) {
         removeDetailFragment()
-        addDetailFragment(contact)
+        addDetailFragment(contact, R.id.details_fragment)
     }
 
     private fun removeDetailFragment() {
@@ -120,25 +148,16 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         }
     }
 
-    private fun addDetailFragment(contact: Contact) {
+    private fun addDetailFragment(contact: Contact, containerViewId: Int) {
         ContactDetailsFragment.newInstance(contact).apply {
-            manager.beginTransaction()
-                .add(
-                    R.id.details_fragment,
+            manager.beginTransaction().apply {
+                if (!isTablet) this.addToBackStack(null)
+            }
+                .replace(
+                    containerViewId,
                     this,
                     CONTACT_DETAILS_FRAGMENT_TAG)
                 .commit()
         }
-    }
-
-    private fun initPhone() {
-        Log.e("initPhone", "invoked")
-        _phoneBinding = ActivityLesson5Binding.inflate(layoutInflater)
-        setContentView(phoneBinding.root)
-        setPhoneFragments()
-    }
-
-    private fun setPhoneFragments() {
-
     }
 }

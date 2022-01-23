@@ -36,10 +36,10 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details) {
         super.onViewCreated(view, savedInstanceState)
         _viewBinding = FragmentContactDetailsBinding.bind(view)
         renderContact(contact)
+        Log.e(CONTACT_DETAILS_FRAGMENT_TAG, "onViewCreated, $contact")
     }
 
     private fun renderContact(contact: Contact) {
-        Log.e("CONTACT", "$contact")
         with(viewBinding) {
             contactDetailsFirstName.text = contact.firstName
             contactDetailsSecondName.text = contact.secondName
@@ -49,6 +49,6 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details) {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.e("DESTROYED", "$contact")
+        Log.e(CONTACT_DETAILS_FRAGMENT_TAG, "onDestroy, $contact")
     }
 }

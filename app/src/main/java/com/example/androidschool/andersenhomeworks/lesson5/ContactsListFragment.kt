@@ -1,6 +1,7 @@
 package com.example.androidschool.andersenhomeworks.lesson5
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -36,13 +37,19 @@ class ContactsListFragment: Fragment(R.layout.fragment_contacts_list) {
 
     private val listeners = mutableListOf<FragmentListener>()
 
-    fun addFragmentListener(listener: FragmentListener) = listeners.add(listener)
+    private val listener by lazy { requireActivity() as FragmentListener }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _viewBinding = FragmentContactsListBinding.bind(view)
 
         initList(contactList)
+        Log.e(CONTACTS_LIST_FRAGMENT_TAG, "onCreateView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e(CONTACTS_LIST_FRAGMENT_TAG, "onDestroy")
     }
 
     /**
@@ -59,7 +66,10 @@ class ContactsListFragment: Fragment(R.layout.fragment_contacts_list) {
             ) as ViewGroup
             fillViewByContact(view, contact)
             linearLayout.addView(view)
-            view.setOnClickListener { listeners.forEach { it.itemClicked(contact.id) } }
+            view.setOnClickListener {
+//                listeners.forEach { it.itemClicked(contact.id) }
+                listener.itemClicked(contact.id)
+            }
         }
     }
 
