@@ -17,6 +17,7 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     companion object {
         private const val CONTACT_LIST = "CONTACT_LIST"
+        private const val NO_CONTACTS = -1
     }
 
     private val isTablet: Boolean by lazy { this.resources.getBoolean(R.bool.isTablet) }
@@ -35,8 +36,12 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     private var currentContactId = 0
     private val repositoryListeners = mutableListOf<RepositoryListener>()
 
-    override fun getCurrentId(): Int = currentContactId
-    override fun getContact(id: Int): Contact = contactList[id]
+    override fun getCurrentId(): Int {
+        return if (contactList.size > 0) currentContactId else NO_CONTACTS
+    }
+    override fun getContact(id: Int): Contact {
+        return if(contactList.size > 0) contactList[id] else Contact()
+    }
     override fun getContacts(): List<Contact> = contactList
 
     override fun addRepositoryListener(listener: RepositoryListener) {
@@ -60,9 +65,6 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
                 replaceDetailFragment()
             }
         }
-        repositoryListeners.forEach {
-            Log.e("listener", "$it")
-        }
     }
 
     override fun onItemEdit(id: Int) {
@@ -70,6 +72,7 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     }
 
     override fun onItemSave(contact: Contact) {
+        if (contact.id == NO_CONTACTS) return
         contactList.removeAt(contact.id)
         contactList.add(contact.id, contact)
         removeFragment(ContactEditFragment.TAG)
@@ -83,17 +86,16 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initView()
-
         savedInstanceState?.let {
             _contactList = it.getParcelableArrayList(CONTACT_LIST) ?: ArrayList()
         } ?: run {
             _contactList = populateContacts(3)
+        }
 
-            when {
-                isTablet -> setTabletFragments()
-                else -> setPhoneFragments()
-            }
+        initView()
+        when {
+            isTablet -> setTabletFragments()
+            else -> setPhoneFragments()
         }
     }
 

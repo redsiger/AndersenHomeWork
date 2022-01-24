@@ -3,6 +3,8 @@ package com.example.androidschool.andersenhomeworks.lesson5.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.FragmentContactDetailsBinding
@@ -14,7 +16,6 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), Repos
 
     companion object {
         const val TAG = "CONTACT_DETAILS_FRAGMENT_TAG"
-        private const val CONTACT_ID = "CONTACT_ID"
 
         fun newInstance(): ContactDetailsFragment = ContactDetailsFragment()
     }
@@ -33,8 +34,17 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), Repos
         _viewBinding = FragmentContactDetailsBinding.bind(view)
 
         listener.addRepositoryListener(this)
-        render(contact)
-        initEditBtn()
+
+        Log.e("ContactID", "$contactId")
+
+        when (contactId) {
+            -1 -> hideView(view as ViewGroup)
+            else -> {
+                showView(view as ViewGroup)
+                render(contact)
+                initEditBtn()
+            }
+        }
     }
 
     private fun render(contact: Contact) {
@@ -48,6 +58,18 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), Repos
     private fun initEditBtn() {
         viewBinding.contactDetailsEditBtn.setOnClickListener {
             listener.onItemEdit(contactId)
+        }
+    }
+
+    private fun showView(viewGroup: ViewGroup) {
+        viewGroup.children.forEach {
+            it.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideView(viewGroup: ViewGroup) {
+        viewGroup.children.forEach {
+            it.visibility = View.GONE
         }
     }
 
