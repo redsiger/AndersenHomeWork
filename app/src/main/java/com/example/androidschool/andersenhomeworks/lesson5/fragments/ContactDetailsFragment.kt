@@ -24,10 +24,13 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), Repos
     private val viewBinding get() = _viewBinding!!
 
     private val listener by lazy { requireActivity() as FragmentListener }
-    private val contactId: Int by lazy { listener.getCurrentId() }
-    private val contact: Contact get() =  listener.getContact(contactId)
+    private val contactPosition: Int by lazy { listener.getCurrentId() }
+    private val contact: Contact get() =  listener.getContact(contactPosition)
 
-    override fun repositoryUpdated() = render(contact)
+    override fun repositoryUpdated() {
+
+        render(contact)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,9 +38,9 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), Repos
 
         listener.addRepositoryListener(this)
 
-        Log.e("ContactID", "$contactId")
+        Log.e("ContactID", "$contactPosition")
 
-        when (contactId) {
+        when (contactPosition) {
             -1 -> hideView(view as ViewGroup)
             else -> {
                 showView(view as ViewGroup)
@@ -50,14 +53,14 @@ class ContactDetailsFragment: Fragment(R.layout.fragment_contact_details), Repos
     private fun render(contact: Contact) {
         with(viewBinding) {
             contactDetailsFirstName.text = contact.firstName
-            contactDetailsSecondName.text = contact.secondName
+            contactDetailsSecondName.text = contact.lastName
             contactDetailsPhoneNumber.text = contact.phoneNumber
         }
     }
 
     private fun initEditBtn() {
         viewBinding.contactDetailsEditBtn.setOnClickListener {
-            listener.onItemEdit(contactId)
+            listener.onItemEdit(contactPosition)
         }
     }
 

@@ -8,12 +8,13 @@ import com.example.androidschool.andersenhomeworks.lesson3.part1.ActivityLesson3
 import com.example.androidschool.andersenhomeworks.lesson3.part2.ActivityLesson3Part2
 import com.example.androidschool.andersenhomeworks.lesson4.ActivityLesson4
 import com.example.androidschool.andersenhomeworks.lesson5.ActivityLesson5
+import com.example.androidschool.andersenhomeworks.lesson5.ActivityLesson6
 import com.example.androidschool.andersenhomeworks.lessons1_2.ActivityLessons1_2
 
 class MainActivity: AppCompatActivity() {
 
-    private lateinit var _binding: ActivityMainBinding
-    private val mBinding get() = _binding
+    private var _binding: ActivityMainBinding? = null
+    private val mBinding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class MainActivity: AppCompatActivity() {
         initLesson3Part2Button()
         initLesson4Button()
         initLesson5Button()
+        initLesson6Button()
     }
 
     private fun initLessons1_2Button() {
@@ -63,6 +65,13 @@ class MainActivity: AppCompatActivity() {
     private fun initLesson5Button() {
         mBinding.activityLesson5LaunchBtn.setOnClickListener {
             val intent = Intent(this, ActivityLesson5::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun initLesson6Button() {
+        mBinding.activityLesson6LaunchBtn.setOnClickListener {
+            val intent = Intent(this, ActivityLesson6::class.java)
             startActivity(intent)
         }
     }

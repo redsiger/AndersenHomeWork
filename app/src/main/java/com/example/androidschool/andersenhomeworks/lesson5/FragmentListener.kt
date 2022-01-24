@@ -8,6 +8,8 @@ interface FragmentListener {
 
     fun onItemSave(contact: Contact)
 
+    fun onItemDelete(id: Int)
+
     fun onItemCancel()
 
     fun getCurrentId(): Int

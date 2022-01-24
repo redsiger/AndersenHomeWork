@@ -32,12 +32,14 @@
     <string name="switzerland">Switzerland</string>
     <string name="activityMain_btnLesson4_title">Lesson 4 (Custom view)</string>
 
-    <!--    ActivityLesson5     -->
+    <!--    ActivityLesson5/6     -->
     <string name="activityLesson4_label">Lesson 4</string>
     <string name="activityLesson4_startBtn_title">start</string>
     <string name="activityLesson4_stopBtn_title">stop</string>
     <string name="activityLesson5_label">Lesson 5</string>
+    <string name="activityLesson6_label">Lesson 6</string>
     <string name="activityMain_btnLesson5_title">Lesson 5 (Contacts)</string>
+    <string name="activityMain_btnLesson6_title">Lesson 6 (Contacts RecyclerView)</string>
     <string name="contact_first_name">First name</string>
     <string name="contact_second_name">Second name</string>
     <string name="contact_phoneNumber">Phone number</string>
@@ -45,8 +47,9 @@
     <string name="cancel_btn_title">@android:string/cancel</string>
     <string name="edit_btn_title">Edit</string>
     <string name="contact_edit_fragment_title">Editing</string>
-    <string name="contact_details_firstname_title">Firstname:</string>
-    <string name="contact_details_second_name_title">Second name:</string>
+    <string name="contact_details_firstname_title">First name:</string>
+    <string name="contact_details_second_name_title">Last name:</string>
     <string name="contact_details_phone_number_title">Phone number:</string>
+    <string name="contact_menu_item_delete_title">Delete</string>
 
 </resources>

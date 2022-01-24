@@ -23,4 +23,13 @@
         <item name="android:layout_height">0dp</item>
     </style>
 
+    <!--    ActivityLesson6        -->
+    <style name="ContactItemFieldLabel">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="ContactItemField">
+        <item name="android:textSize">@dimen/text_size_standard</item>
+    </style>
+
 </resources>

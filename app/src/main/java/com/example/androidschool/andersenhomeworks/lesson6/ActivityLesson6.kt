@@ -1,6 +1,7 @@
 package com.example.androidschool.andersenhomeworks.lesson5
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -9,10 +10,10 @@ import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson5Bi
 import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson5LandBinding
 import com.example.androidschool.andersenhomeworks.lesson5.fragments.ContactDetailsFragment
 import com.example.androidschool.andersenhomeworks.lesson5.fragments.ContactEditFragment
-import com.example.androidschool.andersenhomeworks.lesson5.fragments.ContactsListFragment
+import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactRecyclerListFragment
 import com.github.javafaker.Faker
 
-class ActivityLesson5: AppCompatActivity(), FragmentListener {
+class ActivityLesson6: AppCompatActivity(), FragmentListener {
 
     companion object {
         private const val CONTACT_LIST = "CONTACT_LIST"
@@ -31,12 +32,12 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     private val faker = Faker()
 
     private var _contactList = mutableListOf<Contact>()
-    private val contactList get() = _contactList
-    private var currentContactId = 0
+    private val contactList: List<Contact> get() = _contactList
+    private var currentListPosition = 0
     private val repositoryListeners = mutableListOf<RepositoryListener>()
 
     override fun getCurrentId(): Int {
-        return if (contactList.size > 0) currentContactId else NO_CONTACTS
+        return if (contactList.size > 0) currentListPosition else NO_CONTACTS
     }
     override fun getContact(id: Int): Contact {
         return if(contactList.size > 0) contactList[id] else Contact()
@@ -53,33 +54,35 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
 
     private fun updateListeners() = repositoryListeners.forEach { it.repositoryUpdated() }
 
-    override fun onItemClick(id: Int) {
+    override fun onItemClick(position: Int) {
         when {
             isTablet -> {
-                if (currentContactId != id) replaceDetailFragment()
-                currentContactId = id
+                if (currentListPosition != position) replaceDetailFragment()
+                currentListPosition = position
             }
             else -> {
-                currentContactId = id
+                currentListPosition = position
                 replaceDetailFragment()
             }
         }
     }
 
-    override fun onItemEdit(id: Int) {
-        addFragment(0, ContactEditFragment.TAG)
+    override fun onItemEdit(position: Int) {
+        addFragment("", 0, ContactEditFragment.TAG)
     }
 
     override fun onItemSave(contact: Contact) {
         if (contact.id == NO_CONTACTS) return
-        contactList.removeAt(contact.id)
-        contactList.add(contact.id, contact)
+        _contactList.removeAt(contact.id)
+        _contactList.add(contact.id, contact)
         removeFragment(ContactEditFragment.TAG)
         updateListeners()
     }
 
-    override fun onItemDelete(id: Int) {
-        TODO("Not yet implemented")
+    override fun onItemDelete(position: Int) {
+        _contactList.removeAt(position)
+        updateListeners()
+        Log.e("DELETED", "$position")
     }
 
     override fun onItemCancel() {
@@ -92,7 +95,11 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
         savedInstanceState?.let {
             _contactList = it.getParcelableArrayList(CONTACT_LIST) ?: ArrayList()
         } ?: run {
-            _contactList = populateContacts(3)
+//            lifecycleScope.launch(Dispatchers.Main) {
+//                _contactList = populateContacts(100)
+//                updateListeners()
+//            }
+            _contactList = populateContacts(10)
         }
 
         initView()
@@ -140,36 +147,43 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
     }
 
     private fun replaceListFragment() {
-        val tag = ContactsListFragment.TAG
+        val tag = ContactRecyclerListFragment.TAG
         removeFragment(tag)
-        addFragment(R.id.fragment_main, tag)
+        addFragment(ContactRecyclerListFragment::class.java.name, R.id.fragment_main, tag)
     }
 
     private fun replaceDetailFragment() {
         val tag = ContactDetailsFragment.TAG
         removeFragment(tag)
         when {
-            isTablet -> { addFragment(R.id.fragment_details, tag) }
-            else -> { addFragment(R.id.fragment_main, tag) }
+            isTablet -> { addFragment(
+                ContactDetailsFragment::class.java.name,
+                R.id.fragment_details,
+                tag
+            )}
+            else -> { addFragment(
+                ContactDetailsFragment::class.java.name,
+                R.id.fragment_main,
+                tag
+            ) }
         }
 
     }
 
-    private fun addFragment(containerViewId: Int, tag: String) {
+    private fun addFragment(fragmentName: String, containerViewId: Int, tag: String) {
         when (tag) {
-            ContactsListFragment.TAG -> replace(
-                ContactsListFragment.newInstance(),
-                containerViewId,
-                tag
-            )
-            ContactDetailsFragment.TAG -> replace(
-                ContactDetailsFragment.newInstance(),
-                containerViewId,
-                tag
-            )
             ContactEditFragment.TAG -> ContactEditFragment.newInstance()
                 .show(manager, ContactEditFragment.TAG)
+            else -> replace(
+                createFragment(fragmentName),
+                containerViewId,
+                tag
+            )
         }
+    }
+
+    private fun createFragment(fragmentClassName: String): Fragment {
+        return Class.forName(fragmentClassName).newInstance() as Fragment
     }
 
     private fun replace(fragment: Fragment, containerViewId: Int, tag: String) {
@@ -199,7 +213,8 @@ class ActivityLesson5: AppCompatActivity(), FragmentListener {
                 id = i,
                 firstName = faker.name().firstName(),
                 lastName = faker.name().lastName(),
-                phoneNumber = faker.phoneNumber().phoneNumber()
+                phoneNumber = faker.phoneNumber().phoneNumber(),
+                imgUrl = "https://picsum.photos/200?temp=" + faker.name()
             )
             contactList.add(contact)
         }

@@ -2,7 +2,6 @@ package com.example.androidschool.andersenhomeworks.lesson5.fragments
 
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +40,7 @@ class ContactEditFragment: BottomSheetDialogFragment(), RepositoryListener {
         with(viewBinding) {
             contactEditSaveBtn.setOnClickListener {
                 listener.onItemSave(
-                    Contact(
+                    contact.copy(
                         contact.id,
                         this.contactEditFirstName.editText!!.text.toString(),
                         this.contactEditSecondName.editText!!.text.toString(),
@@ -60,7 +59,7 @@ class ContactEditFragment: BottomSheetDialogFragment(), RepositoryListener {
     private fun render(contact: Contact) {
         with(viewBinding) {
             contactEditFirstName.editText!!.text = toEditable(contact.firstName)
-            contactEditSecondName.editText!!.text = toEditable(contact.secondName)
+            contactEditSecondName.editText!!.text = toEditable(contact.lastName)
             contactEditPhoneNumber.editText!!.text = toEditable(contact.phoneNumber)
         }
     }

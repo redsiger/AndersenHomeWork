@@ -52,6 +52,13 @@
             android:theme="@style/Theme.Lesson5">
         </activity>
 
+        <!--        ActivityLesson6        -->
+        <activity
+            android:name=".lesson5.ActivityLesson6"
+            android:label="@string/activityLesson6_label"
+            android:theme="@style/Theme.Lesson5">
+        </activity>
+
     </application>
 
 </manifest>

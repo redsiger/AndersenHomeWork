@@ -1,19 +1,16 @@
 package com.example.androidschool.andersenhomeworks.lesson5.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.FragmentContactsListBinding
 import com.example.androidschool.andersenhomeworks.lesson5.Contact
 import com.example.androidschool.andersenhomeworks.lesson5.FragmentListener
 import com.example.androidschool.andersenhomeworks.lesson5.RepositoryListener
-import com.example.androidschool.andersenhomeworks.util.dpToPx
 
 class ContactsListFragment: Fragment(R.layout.fragment_contacts_list), RepositoryListener {
 
@@ -69,7 +66,7 @@ class ContactsListFragment: Fragment(R.layout.fragment_contacts_list), Repositor
         (view.getChildAt(0) as ViewGroup).children.forEach { view ->
             when {
                 view.id == R.id.item_contact_firstName -> (view as TextView).text = contact.firstName
-                view.id == R.id.item_contact_secondName -> (view as TextView).text = contact.secondName
+                view.id == R.id.item_contact_secondName -> (view as TextView).text = contact.lastName
                 view.id == R.id.item_contact_phoneNumber -> (view as TextView).text = contact.phoneNumber
             }
         }
