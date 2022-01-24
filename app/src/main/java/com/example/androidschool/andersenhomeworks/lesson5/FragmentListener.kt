@@ -8,9 +8,15 @@ interface FragmentListener {
 
     fun onItemSave(contact: Contact)
 
+    fun onItemCancel()
+
+    fun getCurrentId(): Int
+
     fun getContact(id: Int): Contact
 
     fun getContacts(): List<Contact>
 
     fun addRepositoryListener(listener: RepositoryListener)
+
+    fun removeRepositoryListener(listener: RepositoryListener)
 }

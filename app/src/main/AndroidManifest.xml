@@ -48,7 +48,8 @@
         <!--        ActivityLesson5        -->
         <activity
             android:name=".lesson5.ActivityLesson5"
-            android:label="@string/activityLesson5_label">
+            android:label="@string/activityLesson5_label"
+            android:theme="@style/Theme.Lesson5">
         </activity>
 
     </application>

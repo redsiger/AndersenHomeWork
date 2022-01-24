@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.withSave
 import com.example.androidschool.andersenhomeworks.R
-import com.example.androidschool.andersenhomeworks.lesson4.util.dpToPx
+import com.example.androidschool.andersenhomeworks.util.dpToPx
 import java.util.*
 
 class ClockView @JvmOverloads constructor(

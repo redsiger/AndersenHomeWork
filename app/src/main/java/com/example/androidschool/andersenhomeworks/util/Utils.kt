@@ -1,4 +1,4 @@
-package com.example.androidschool.andersenhomeworks.lesson4.util
+package com.example.androidschool.andersenhomeworks.util
 
 import android.content.Context
 
