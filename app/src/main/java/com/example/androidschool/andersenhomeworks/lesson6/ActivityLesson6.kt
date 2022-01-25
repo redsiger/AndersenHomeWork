@@ -83,6 +83,7 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
         _contactList.removeAt(position)
         updateListeners()
         Log.e("DELETED", "$position")
+        Log.e("REPOSITORY", "$contactList")
     }
 
     override fun onItemCancel() {
@@ -95,10 +96,6 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
         savedInstanceState?.let {
             _contactList = it.getParcelableArrayList(CONTACT_LIST) ?: ArrayList()
         } ?: run {
-//            lifecycleScope.launch(Dispatchers.Main) {
-//                _contactList = populateContacts(100)
-//                updateListeners()
-//            }
             _contactList = populateContacts(10)
         }
 

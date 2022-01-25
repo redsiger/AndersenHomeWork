@@ -19,6 +19,7 @@ class ContactAdapter(
 ): RecyclerView.Adapter<ContactViewHolder>() {
 
     private var _contactList: MutableList<Contact> = mutableListOf()
+
     fun setList(contactList: List<Contact>) {
         val inputList = contactList.toMutableList()
         val callback = ContactDiffUtil(_contactList, inputList)
@@ -61,31 +62,27 @@ class ContactAdapter(
     }
 
     override fun getItemCount(): Int = _contactList.size
+}
 
-    class ContactDiffUtil(
-        private val oldList: List<Contact>,
-        private val newList: List<Contact>
-    ): DiffUtil.Callback() {
+class ContactDiffUtil(
+    private val oldList: List<Contact>,
+    private val newList: List<Contact>
+): DiffUtil.Callback() {
 
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
+    override fun getOldListSize(): Int = oldList.size
 
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
+    override fun getNewListSize(): Int = newList.size
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = oldList[newItemPosition]
-            return oldItem.firstName == newItem.firstName
-        }
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = oldList[newItemPosition]
+        return oldItem.id == newItem.id
+    }
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem = oldList[oldItemPosition]
-            val newItem = oldList[newItemPosition]
-            return oldItem.firstName == newItem.firstName
-        }
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = oldList[newItemPosition]
+        return oldItem.firstName == newItem.firstName
     }
 }
 
