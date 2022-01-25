@@ -21,6 +21,7 @@
     <dimen name="text_size_standard">14dp</dimen>
     <dimen name="text_size_large">18dp</dimen>
     <dimen name="contact_item_image_size">100dp</dimen>
+    <dimen name="contact_item_stroke_padding">6dp</dimen>
     <dimen name="contact_details_image_size">200dp</dimen>
     <dimen name="contact_details_default_margin">10dp</dimen>
 

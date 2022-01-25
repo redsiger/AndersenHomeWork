@@ -52,3 +52,10 @@ Tasks:
 <li>When the 1 fragment is opened, back button pressing close the app
 <li>Add contact editing in details fragment
 <li>Add tablet mode: both fragments are display on one screen at the same time
+
+## Lesson 6
+Tasks:
+<li>Improve Lesson 5: Make It a Recycler
+<li>Add ability to search by last name and fist name, delete contact
+<li>Add ItemDecorator for separators and paddings
+<li>All data changes in the adapter must be made using DiffUtil.

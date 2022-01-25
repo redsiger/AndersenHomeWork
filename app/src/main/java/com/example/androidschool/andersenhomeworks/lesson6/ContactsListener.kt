@@ -1,6 +1,6 @@
 package com.example.androidschool.andersenhomeworks.lesson6
 
-interface FragmentListener {
+interface ContactsListener {
 
     fun onItemClick(id: Int)
 
@@ -12,7 +12,7 @@ interface FragmentListener {
 
     fun onItemCancel()
 
-    fun getCurrentId(): Int
+    fun getDefaultId(): Int
 
     fun getContact(id: Int): Contact
 

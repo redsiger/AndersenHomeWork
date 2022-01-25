@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.FragmentContactRecyclerListBinding
 import com.example.androidschool.andersenhomeworks.lesson6.Contact
-import com.example.androidschool.andersenhomeworks.lesson6.FragmentListener
+import com.example.androidschool.andersenhomeworks.lesson6.ContactsListener
 import com.example.androidschool.andersenhomeworks.lesson6.RepositoryListener
+import com.example.androidschool.andersenhomeworks.lesson6.fragments.recycler.ContactItemDecorator
 
 class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_list), RepositoryListener {
 
@@ -19,11 +20,11 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
     private var _viewBinding: FragmentContactRecyclerListBinding? = null
     private val viewBinding get() = _viewBinding!!
 
-    private val listener by lazy { requireActivity() as FragmentListener }
+    private val listener by lazy { requireActivity() as ContactsListener }
     private val contactList get() = listener.getContacts()
 
     private val contactListAdapter by lazy {
-        ContactAdapter(listener::onItemClick, listener::onItemDelete)
+        ContactAdapter(listener)
     }
 
     override fun repositoryUpdated() {
@@ -46,6 +47,11 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
                 requireContext(),
                 LinearLayoutManager.VERTICAL,
                 false
+            )
+            val margin = requireContext().resources.getDimension(R.dimen.contact_main_padding).toInt()
+
+            addItemDecoration(
+                ContactItemDecorator(marginBottom =  margin)
             )
         }
     }

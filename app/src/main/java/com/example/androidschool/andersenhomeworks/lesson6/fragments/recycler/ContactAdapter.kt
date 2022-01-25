@@ -9,15 +9,15 @@ import com.bumptech.glide.signature.ObjectKey
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.ItemContactRvBinding
 import com.example.androidschool.andersenhomeworks.lesson6.Contact
+import com.example.androidschool.andersenhomeworks.lesson6.ContactsListener
 
 class ContactAdapter(
-    private val actionClick: (id: Int) -> Unit,
-    private val actionLongClick: (id: Int) -> Unit
+    private val contactsListener: ContactsListener
 ): RecyclerView.Adapter<ContactViewHolder>(), View.OnClickListener, View.OnLongClickListener {
 
     override fun onLongClick(view: View): Boolean {
         val contactId = view.tag as Int
-        actionLongClick(contactId)
+        contactsListener.onItemClick(contactId)
         return true
     }
 
@@ -25,7 +25,7 @@ class ContactAdapter(
         val contactId = view.tag as Int
         when (view.id) {
             R.id.item_contact_btn_more -> {showPopupMenu(view)}
-            else -> actionClick(contactId)
+            else -> contactsListener.onItemClick(contactId)
         }
     }
 
@@ -64,7 +64,7 @@ class ContactAdapter(
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.contact_menu_item_delete -> {
-                        actionLongClick(contactId)
+                        contactsListener.onItemDelete(contactId)
                         true
                     }
                     else -> {true}

@@ -7,17 +7,9 @@ import androidx.fragment.app.FragmentManager
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson6Binding
 import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson6LandBinding
-import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactDetailsFragment
-import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactEditFragment
-import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactRecyclerListFragment
-import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactsDataSource
+import com.example.androidschool.andersenhomeworks.lesson6.fragments.*
 
-class ActivityLesson6: AppCompatActivity(), FragmentListener {
-
-    companion object {
-        private const val CONTACT_LIST = "CONTACT_LIST"
-        private const val NO_CONTACTS = -1
-    }
+class ActivityLesson6: AppCompatActivity(), ContactsListener, DialogListener {
 
     private val isTablet: Boolean by lazy { this.resources.getBoolean(R.bool.isTablet) }
     private var _tabletBinding: ActivityLesson6LandBinding? = null
@@ -34,7 +26,6 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
 
     private val repositoryListeners = mutableListOf<RepositoryListener>()
 
-    override fun getCurrentId(): Int = currentContactId
     override fun getContact(id: Int): Contact = service.getContact(id)
     override fun getContacts(): List<Contact> = service.getContacts()
 
@@ -48,23 +39,18 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
 
     private fun updateListeners() = repositoryListeners.forEach { it.repositoryUpdated() }
 
-    override fun onItemClick(id: Int) {
+    override fun onItemClick(contactId: Int) {
         when {
-            isTablet -> {
-                if (currentContactId != id) {
-                    currentContactId = id
-                    replaceDetailFragment()
-                }
+            isTablet -> if (currentContactId != contactId) {
+                currentContactId = contactId
+                replaceDetailFragment(contactId)
             }
-            else -> {
-                currentContactId = id
-                replaceDetailFragment()
-            }
+            else -> replaceDetailFragment(contactId)
         }
     }
 
-    override fun onItemEdit(position: Int) {
-        addFragment("", 0, ContactEditFragment.TAG)
+    override fun onItemEdit(contactId: Int) {
+        ContactEditFragment.newInstance(contactId).show(manager, ContactEditFragment.TAG)
     }
 
     override fun onItemSave(contact: Contact) {
@@ -74,6 +60,16 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
     }
 
     override fun onItemDelete(id: Int) {
+        showDeleteDialog(id)
+    }
+
+    override fun getDefaultId(): Int = service.getDefaultId()
+
+    override fun accept(contactId: Int) {
+        deleteContact(contactId)
+    }
+
+    private fun deleteContact(id: Int) {
         service.deleteContact(id)
         if (currentContactId == id) currentContactId = service.getDefaultId()
         updateListeners()
@@ -83,6 +79,9 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
         removeFragment(ContactEditFragment.TAG)
     }
 
+    /**
+     * Entry point
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,6 +93,9 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
     }
 
 
+    /**
+     * Initializes layout depend on device
+     */
     private fun initView() {
         when {
             isTablet -> initTabletView()
@@ -117,11 +119,17 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
         setContentView(phoneBinding.root)
     }
 
+    /**
+     * Sets two fragment per one screen
+     */
     private fun setTabletFragments() {
         replaceListFragment()
-        replaceDetailFragment()
+        replaceDetailFragment(0)
     }
 
+    /**
+     * Sets one fragment per screen
+     */
     private fun setPhoneFragments() {
         replaceListFragment()
     }
@@ -129,47 +137,44 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
     private fun replaceListFragment() {
         val tag = ContactRecyclerListFragment.TAG
         removeFragment(tag)
-        addFragment(ContactRecyclerListFragment::class.java.name, R.id.fragment_main, tag)
+        replaceFragment(ContactRecyclerListFragment(), R.id.fragment_main, tag, false)
     }
 
-    private fun replaceDetailFragment() {
+    private fun replaceDetailFragment(contactId: Int) {
         val tag = ContactDetailsFragment.TAG
         removeFragment(tag)
         when {
-            isTablet -> { addFragment(
-                ContactDetailsFragment::class.java.name,
+            isTablet -> { replaceFragment(
+                ContactDetailsFragment.newInstance(contactId),
                 R.id.fragment_details,
-                tag
+                tag,
+                false
             )}
-            else -> { addFragment(
-                ContactDetailsFragment::class.java.name,
+            else -> { replaceFragment(
+                ContactDetailsFragment.newInstance(contactId),
                 R.id.fragment_main,
-                tag
+                tag,
+                true
             ) }
         }
 
     }
 
-    private fun addFragment(fragmentName: String, containerViewId: Int, tag: String) {
-        when (tag) {
-            ContactEditFragment.TAG -> ContactEditFragment.newInstance()
-                .show(manager, ContactEditFragment.TAG)
-            else -> replace(
-                createFragment(fragmentName),
-                containerViewId,
-                tag
-            )
-        }
+    private fun showDeleteDialog(contactId: Int) {
+        DeleteContactDialogFragment
+            .newInstance(contactId)
+            .show(manager, DeleteContactDialogFragment.TAG)
     }
 
-    private fun createFragment(fragmentClassName: String): Fragment {
-        return Class.forName(fragmentClassName).newInstance() as Fragment
-    }
-
-    private fun replace(fragment: Fragment, containerViewId: Int, tag: String) {
+    private fun replaceFragment(
+        fragment: Fragment,
+        containerViewId: Int,
+        tag: String,
+        addToBackStack: Boolean
+    ) {
         manager
             .beginTransaction()
-            .apply { if (!isTablet && tag == ContactDetailsFragment.TAG) this.addToBackStack(tag) }
+            .apply { if (addToBackStack) this.addToBackStack(tag) }
             .replace(
                 containerViewId,
                 fragment,
