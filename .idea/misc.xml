@@ -10,6 +10,8 @@
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/activity_lesson4.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/activity_lesson5.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/activity_lesson5_land.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/activity_lesson6.xml" value="0.275" />
+        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/activity_lesson6_land.xml" value="0.275" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/austria_flag.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/flag_austria.xml" value="0.36666666666666664" />
@@ -21,13 +23,14 @@
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/flag_poland.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/flag_switzerland.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/flag_thailand.xml" value="0.36666666666666664" />
-        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contact_details.xml" value="0.5" />
+        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contact_details.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contact_details_lesson5.xml" value="0.275" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contact_edit.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contact_recycler_list.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contacts_list.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/fragment_contacts_list_land.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/item_contact.xml" value="0.36666666666666664" />
-        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/item_contact_rv.xml" value="0.5" />
+        <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/layout/item_contact_rv.xml" value="0.67" />
         <entry key="..\:/AndroidStudioProjects/AndersenHomeworks/app/src/main/res/menu/contact_menu.xml" value="0.36666666666666664" />
       </map>
     </option>

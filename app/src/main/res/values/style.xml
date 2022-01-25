@@ -32,4 +32,23 @@
         <item name="android:textSize">@dimen/text_size_standard</item>
     </style>
 
+    <style name="ContactItemFieldLine">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ContactDetailFieldLabel">
+        <item name="android:textSize">@dimen/text_size_standard</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="ContactDetailField">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/contact_details_default_margin</item>
+    </style>
+
 </resources>

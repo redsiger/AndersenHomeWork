@@ -41,7 +41,7 @@
     <string name="activityMain_btnLesson5_title">Lesson 5 (Contacts)</string>
     <string name="activityMain_btnLesson6_title">Lesson 6 (Contacts RecyclerView)</string>
     <string name="contact_first_name">First name</string>
-    <string name="contact_second_name">Second name</string>
+    <string name="contact_last_name">Last name</string>
     <string name="contact_phoneNumber">Phone number</string>
     <string name="save_btn_title">save</string>
     <string name="cancel_btn_title">@android:string/cancel</string>

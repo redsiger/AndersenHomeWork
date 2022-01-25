@@ -1,15 +1,14 @@
 package com.example.androidschool.andersenhomeworks.lesson6.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.FragmentContactRecyclerListBinding
-import com.example.androidschool.andersenhomeworks.lesson5.Contact
-import com.example.androidschool.andersenhomeworks.lesson5.FragmentListener
-import com.example.androidschool.andersenhomeworks.lesson5.RepositoryListener
+import com.example.androidschool.andersenhomeworks.lesson6.Contact
+import com.example.androidschool.andersenhomeworks.lesson6.FragmentListener
+import com.example.androidschool.andersenhomeworks.lesson6.RepositoryListener
 
 class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_list), RepositoryListener {
 
@@ -28,8 +27,7 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
     }
 
     override fun repositoryUpdated() {
-        Log.e("RECYCLER", "invoked")
-        contactListAdapter.setList(listener.getContacts())
+        contactListAdapter.setList(contactList)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

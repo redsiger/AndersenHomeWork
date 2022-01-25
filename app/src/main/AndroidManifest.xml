@@ -54,9 +54,9 @@
 
         <!--        ActivityLesson6        -->
         <activity
-            android:name=".lesson5.ActivityLesson6"
+            android:name=".lesson6.ActivityLesson6"
             android:label="@string/activityLesson6_label"
-            android:theme="@style/Theme.Lesson5">
+            android:theme="@style/Theme.Lesson6">
         </activity>
 
     </application>

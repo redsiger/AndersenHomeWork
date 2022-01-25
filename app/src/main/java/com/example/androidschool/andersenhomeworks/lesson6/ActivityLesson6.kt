@@ -1,17 +1,16 @@
-package com.example.androidschool.andersenhomeworks.lesson5
+package com.example.androidschool.andersenhomeworks.lesson6
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.androidschool.andersenhomeworks.R
-import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson5Binding
-import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson5LandBinding
-import com.example.androidschool.andersenhomeworks.lesson5.fragments.ContactDetailsFragment
-import com.example.androidschool.andersenhomeworks.lesson5.fragments.ContactEditFragment
+import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson6Binding
+import com.example.androidschool.andersenhomeworks.databinding.ActivityLesson6LandBinding
+import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactDetailsFragment
+import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactEditFragment
 import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactRecyclerListFragment
-import com.github.javafaker.Faker
+import com.example.androidschool.andersenhomeworks.lesson6.fragments.ContactsDataSource
 
 class ActivityLesson6: AppCompatActivity(), FragmentListener {
 
@@ -21,28 +20,23 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
     }
 
     private val isTablet: Boolean by lazy { this.resources.getBoolean(R.bool.isTablet) }
-    private var _tabletBinding: ActivityLesson5LandBinding? = null
+    private var _tabletBinding: ActivityLesson6LandBinding? = null
     private val tabletBinding get() = _tabletBinding!!
 
-    private var _phoneBinding: ActivityLesson5Binding? = null
+    private var _phoneBinding: ActivityLesson6Binding? = null
     private val phoneBinding get() = _phoneBinding!!
 
     private val manager: FragmentManager by lazy { supportFragmentManager }
 
-    private val faker = Faker()
+    private val service = ContactsDataSource.Local()
 
-    private var _contactList = mutableListOf<Contact>()
-    private val contactList: List<Contact> get() = _contactList
-    private var currentListPosition = 0
+    private var currentContactId = service.getDefaultId()
+
     private val repositoryListeners = mutableListOf<RepositoryListener>()
 
-    override fun getCurrentId(): Int {
-        return if (contactList.size > 0) currentListPosition else NO_CONTACTS
-    }
-    override fun getContact(id: Int): Contact {
-        return if(contactList.size > 0) contactList[id] else Contact()
-    }
-    override fun getContacts(): List<Contact> = contactList
+    override fun getCurrentId(): Int = currentContactId
+    override fun getContact(id: Int): Contact = service.getContact(id)
+    override fun getContacts(): List<Contact> = service.getContacts()
 
     override fun addRepositoryListener(listener: RepositoryListener) {
         repositoryListeners.add(listener)
@@ -54,14 +48,16 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
 
     private fun updateListeners() = repositoryListeners.forEach { it.repositoryUpdated() }
 
-    override fun onItemClick(position: Int) {
+    override fun onItemClick(id: Int) {
         when {
             isTablet -> {
-                if (currentListPosition != position) replaceDetailFragment()
-                currentListPosition = position
+                if (currentContactId != id) {
+                    currentContactId = id
+                    replaceDetailFragment()
+                }
             }
             else -> {
-                currentListPosition = position
+                currentContactId = id
                 replaceDetailFragment()
             }
         }
@@ -72,18 +68,15 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
     }
 
     override fun onItemSave(contact: Contact) {
-        if (contact.id == NO_CONTACTS) return
-        _contactList.removeAt(contact.id)
-        _contactList.add(contact.id, contact)
+        service.editContact(contact)
         removeFragment(ContactEditFragment.TAG)
         updateListeners()
     }
 
-    override fun onItemDelete(position: Int) {
-        _contactList.removeAt(position)
+    override fun onItemDelete(id: Int) {
+        service.deleteContact(id)
+        if (currentContactId == id) currentContactId = service.getDefaultId()
         updateListeners()
-        Log.e("DELETED", "$position")
-        Log.e("REPOSITORY", "$contactList")
     }
 
     override fun onItemCancel() {
@@ -93,12 +86,6 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        savedInstanceState?.let {
-            _contactList = it.getParcelableArrayList(CONTACT_LIST) ?: ArrayList()
-        } ?: run {
-            _contactList = populateContacts(10)
-        }
-
         initView()
         when {
             isTablet -> setTabletFragments()
@@ -106,10 +93,6 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CONTACT_LIST, ArrayList(contactList))
-        super.onSaveInstanceState(outState)
-    }
 
     private fun initView() {
         when {
@@ -122,7 +105,7 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
      * Initializes tablet layout
      */
     private fun initTabletView() {
-        _tabletBinding = ActivityLesson5LandBinding.inflate(layoutInflater)
+        _tabletBinding = ActivityLesson6LandBinding.inflate(layoutInflater)
         setContentView(tabletBinding.root)
     }
 
@@ -130,7 +113,7 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
      * Initializes phone layout
      */
     private fun initPhoneView() {
-        _phoneBinding = ActivityLesson5Binding.inflate(layoutInflater)
+        _phoneBinding = ActivityLesson6Binding.inflate(layoutInflater)
         setContentView(phoneBinding.root)
     }
 
@@ -201,20 +184,5 @@ class ActivityLesson6: AppCompatActivity(), FragmentListener {
                 .remove(existFragment)
                 .commit()
         }
-    }
-
-    private fun populateContacts(contactsCount: Int): ArrayList<Contact> {
-        val contactList = ArrayList<Contact>()
-        for (i in 0 until contactsCount) {
-            val contact = Contact(
-                id = i,
-                firstName = faker.name().firstName(),
-                lastName = faker.name().lastName(),
-                phoneNumber = faker.phoneNumber().phoneNumber(),
-                imgUrl = "https://picsum.photos/200?temp=" + faker.name()
-            )
-            contactList.add(contact)
-        }
-        return contactList
     }
 }

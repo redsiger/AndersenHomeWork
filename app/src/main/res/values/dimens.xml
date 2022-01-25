@@ -3,6 +3,8 @@
 
     <!--    App     -->
     <dimen name="app_padding">16dp</dimen>
+    <dimen name="app_margin">16dp</dimen>
+    <dimen name="default_corner_radius">10dp</dimen>
 
     <!--    MainActivity        -->
     <dimen name="activityMain_tvCount_textSize">160sp</dimen>
@@ -17,6 +19,9 @@
     <!--    ActivityLesson6     -->
     <dimen name="text_size_small">10dp</dimen>
     <dimen name="text_size_standard">14dp</dimen>
+    <dimen name="text_size_large">18dp</dimen>
     <dimen name="contact_item_image_size">100dp</dimen>
+    <dimen name="contact_details_image_size">200dp</dimen>
+    <dimen name="contact_details_default_margin">10dp</dimen>
 
 </resources>

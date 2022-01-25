@@ -20,4 +20,10 @@
         <item name="cornerSize">4dp</item>
     </style>
 
+    <style name="Theme.Lesson6" parent="Theme.Lesson5">
+
+        <item name="android:textColorTertiary">@color/white</item>
+    </style>
+
+
 </resources>

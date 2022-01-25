@@ -8,7 +8,7 @@ import com.example.androidschool.andersenhomeworks.lesson3.part1.ActivityLesson3
 import com.example.androidschool.andersenhomeworks.lesson3.part2.ActivityLesson3Part2
 import com.example.androidschool.andersenhomeworks.lesson4.ActivityLesson4
 import com.example.androidschool.andersenhomeworks.lesson5.ActivityLesson5
-import com.example.androidschool.andersenhomeworks.lesson5.ActivityLesson6
+import com.example.androidschool.andersenhomeworks.lesson6.ActivityLesson6
 import com.example.androidschool.andersenhomeworks.lessons1_2.ActivityLessons1_2
 
 class MainActivity: AppCompatActivity() {

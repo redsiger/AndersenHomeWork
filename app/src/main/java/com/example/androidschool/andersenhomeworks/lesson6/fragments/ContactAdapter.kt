@@ -1,9 +1,6 @@
 package com.example.androidschool.andersenhomeworks.lesson6.fragments
 
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,78 +8,69 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.androidschool.andersenhomeworks.R
 import com.example.androidschool.andersenhomeworks.databinding.ItemContactRvBinding
-import com.example.androidschool.andersenhomeworks.lesson5.Contact
+import com.example.androidschool.andersenhomeworks.lesson6.Contact
 
 class ContactAdapter(
     private val actionClick: (id: Int) -> Unit,
     private val actionLongClick: (id: Int) -> Unit
-): RecyclerView.Adapter<ContactViewHolder>() {
+): RecyclerView.Adapter<ContactViewHolder>(), View.OnClickListener, View.OnLongClickListener {
 
-    private var _contactList: MutableList<Contact> = mutableListOf()
+    override fun onLongClick(view: View): Boolean {
+        val contactId = view.tag as Int
+        actionLongClick(contactId)
+        return true
+    }
+
+    override fun onClick(view: View) {
+        val contactId = view.tag as Int
+        when (view.id) {
+            R.id.item_contact_btn_more -> {showPopupMenu(view)}
+            else -> actionClick(contactId)
+        }
+    }
+
+    private var _contactList: List<Contact> = emptyList()
 
     fun setList(contactList: List<Contact>) {
-        val inputList = contactList.toMutableList()
-        val callback = ContactDiffUtil(_contactList, inputList)
+        val callback = ContactDiffUtil(_contactList, contactList)
         val diffResult = DiffUtil.calculateDiff(callback)
-
-        _contactList = inputList
-//        notifyDataSetChanged()
+        _contactList = contactList
         diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_contact_rv, parent, false)
-        return ContactViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemContactRvBinding.inflate(inflater, parent, false)
+
+        binding.root.setOnClickListener(this)
+        binding.itemContactBtnMore.setOnClickListener(this)
+        binding.root.setOnLongClickListener(this)
+        return ContactViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        holder.bind(_contactList[position])
-        val contactId = _contactList[position].id
-        holder.itemView.setOnClickListener {
-            actionClick(position)
-        }
-        holder.itemView.setOnLongClickListener {
-            actionLongClick(position)
-            true
-        }
-        (holder.viewBinding.itemContactImage.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.contact_menu)
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.contact_menu_item_delete -> {
-                            actionLongClick(position)
-                            true
-                        }
-                        else -> {true}
-                    }
-                }
-            }.show()
-        })
+        val contact = _contactList[position]
+        holder.bind(contact)
+        holder.itemView.tag = contact.id
+        holder.viewBinding.itemContactBtnMore.tag = contact.id
     }
 
     override fun getItemCount(): Int = _contactList.size
-}
 
-class ContactDiffUtil(
-    private val oldList: List<Contact>,
-    private val newList: List<Contact>
-): DiffUtil.Callback() {
-
-    override fun getOldListSize(): Int = oldList.size
-
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = oldList[newItemPosition]
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = oldList[newItemPosition]
-        return oldItem.firstName == newItem.firstName
+    private fun showPopupMenu(view: View) {
+        val contactId = view.tag as Int
+        PopupMenu(view.context, view, Gravity.END, R.attr.actionOverflowMenuStyle, 0).apply {
+            inflate(R.menu.contact_menu)
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.contact_menu_item_delete -> {
+                        actionLongClick(contactId)
+                        true
+                    }
+                    else -> {true}
+                }
+            }
+        }.show()
     }
 }
 
@@ -97,8 +85,31 @@ class ContactViewHolder(view: View): RecyclerView.ViewHolder(view) {
             itemContactPhoneNumber.text = contact.phoneNumber
             Glide.with(itemView.context)
                 .load(contact.imgUrl)
+                .placeholder(R.drawable.ic_baseline_person_24)
                 .signature(ObjectKey(contact.imgUrl + contact.id))
                 .into(itemContactImage)
         }
+    }
+
+}
+
+class ContactDiffUtil(
+    private val oldList: List<Contact>,
+    private val newList: List<com.example.androidschool.andersenhomeworks.lesson6.Contact>
+): DiffUtil.Callback() {
+
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem.firstName == newItem.firstName
     }
 }
