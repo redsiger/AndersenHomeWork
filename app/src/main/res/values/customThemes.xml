@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Lesson5" parent="Theme.MaterialComponents">
+    <style name="Theme.Lesson5" parent="Theme.MaterialComponents.NoActionBar">
 
         <item name="colorPrimary">@color/red</item>
         <item name="colorPrimarySurface">@color/red</item>

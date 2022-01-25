@@ -18,6 +18,8 @@ interface ContactsListener {
 
     fun getContacts(): List<Contact>
 
+    fun searchContact(query: String)
+
     fun addRepositoryListener(listener: RepositoryListener)
 
     fun removeRepositoryListener(listener: RepositoryListener)

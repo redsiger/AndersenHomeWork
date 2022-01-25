@@ -1,7 +1,16 @@
 package com.example.androidschool.andersenhomeworks.lesson6.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidschool.andersenhomeworks.R
@@ -37,6 +46,11 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
 
         listener.addRepositoryListener(this)
         initRecycler()
+        initToolbar(
+            viewBinding.searchInput,
+            viewBinding.searchClear,
+
+        )
         render(contactList)
     }
 
@@ -59,6 +73,31 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
     private fun render(contactList: List<Contact>) {
         contactListAdapter.setList(contactList)
     }
+
+    private fun initToolbar(searchEditText: EditText, clearBtn: View, actionSearch: (String) -> Unit) {
+        initSearch(searchEditText, clearBtn, actionSearch)
+    }
+
+    /**
+     * Function to make input clearable
+     */
+    private fun initSearch(searchEditText: EditText, clearBtn: View, actionSearch: (String) -> Unit) {
+        searchEditText.addTextChangedListener(object: TextWatcher {
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                Log.e("TEXT CHANGED", text.toString())
+                actionSearch(text.toString())
+            }
+            override fun beforeTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(text: Editable?) {
+                clearBtn.visibility = if (text.isNullOrEmpty()) View.GONE else View.VISIBLE
+            }
+        })
+
+        clearBtn.setOnClickListener {
+            searchEditText.text.clear()
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -14,6 +14,7 @@ interface ContactsDataSource {
     fun getContact(id: Int): Contact
     fun deleteContact(id: Int)
     fun editContact(contact: Contact)
+    fun searchContact(query: String)
 
     class Local(): ContactsDataSource {
 
@@ -41,6 +42,10 @@ interface ContactsDataSource {
 
         override fun editContact(contact: Contact) {
             _contactsList = _contactsList.map { if (it.id == contact.id) contact else it }
+        }
+
+        override fun searchContact(query: String) {
+            TODO("Not yet implemented")
         }
 
         private fun populateContacts(contactsCount: Int): List<Contact> {

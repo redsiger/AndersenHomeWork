@@ -29,6 +29,10 @@ class ActivityLesson6: AppCompatActivity(), ContactsListener, DialogListener {
     override fun getContact(id: Int): Contact = service.getContact(id)
     override fun getContacts(): List<Contact> = service.getContacts()
 
+    override fun searchContact(query: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun addRepositoryListener(listener: RepositoryListener) {
         repositoryListeners.add(listener)
     }

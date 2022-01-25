@@ -1,6 +1,8 @@
 package com.example.androidschool.andersenhomeworks.lesson6.fragments
 
 import android.view.*
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +15,11 @@ import com.example.androidschool.andersenhomeworks.lesson6.ContactsListener
 
 class ContactAdapter(
     private val contactsListener: ContactsListener
-): RecyclerView.Adapter<ContactViewHolder>(), View.OnClickListener, View.OnLongClickListener {
+): RecyclerView.Adapter<ContactViewHolder>(),
+    View.OnClickListener,
+    View.OnLongClickListener,
+    Filterable
+{
 
     override fun onLongClick(view: View): Boolean {
         val contactId = view.tag as Int
@@ -71,6 +77,20 @@ class ContactAdapter(
                 }
             }
         }.show()
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            private val filterResults = FilterResults()
+            override fun performFiltering(query: CharSequence?): FilterResults {
+                TODO("Not yet implemented")
+            }
+
+            override fun publishResults(query: CharSequence?, p1: FilterResults?) {
+                TODO("Not yet implemented")
+            }
+
+        }
     }
 }
 
