@@ -1,16 +1,11 @@
 package com.example.androidschool.andersenhomeworks.lesson6.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.androidschool.andersenhomeworks.R
@@ -19,12 +14,19 @@ import com.example.androidschool.andersenhomeworks.lesson6.Contact
 import com.example.androidschool.andersenhomeworks.lesson6.ContactsListener
 import com.example.androidschool.andersenhomeworks.lesson6.RepositoryListener
 import com.example.androidschool.andersenhomeworks.lesson6.fragments.recycler.ContactItemDecorator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
-class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_list), RepositoryListener {
+class ContactRecyclerListFragment : Fragment(R.layout.fragment_contact_recycler_list), RepositoryListener, CoroutineScope {
 
     companion object {
         const val TAG = "CONTACT_RECYCLER_LIST_FRAGMENT_TAG"
     }
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main
 
     private var _viewBinding: FragmentContactRecyclerListBinding? = null
     private val viewBinding get() = _viewBinding!!
@@ -49,7 +51,7 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
         initToolbar(
             viewBinding.searchInput,
             viewBinding.searchClear,
-
+            ::search
         )
         render(contactList)
     }
@@ -79,15 +81,27 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
     }
 
     /**
-     * Function to make input clearable
+     * Function to make input clearable and launches search for Contacts
      */
     private fun initSearch(searchEditText: EditText, clearBtn: View, actionSearch: (String) -> Unit) {
         searchEditText.addTextChangedListener(object: TextWatcher {
+            private var _query = ""
             override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.e("TEXT CHANGED", text.toString())
-                actionSearch(text.toString())
+
+                text?.trim()?.apply {
+                    val query = this.toString()
+                    if (_query == query) return
+
+                    _query = query
+
+                    launch {
+                        delay(1000)
+                        if (_query != query) return@launch
+                        actionSearch(_query)
+                    }
+                }
             }
-            override fun beforeTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(text: Editable?) {
                 clearBtn.visibility = if (text.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
@@ -98,6 +112,10 @@ class ContactRecyclerListFragment: Fragment(R.layout.fragment_contact_recycler_l
         }
     }
 
+
+    private fun search(query: String) {
+        contactListAdapter.setList(listener.searchContacts(query))
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

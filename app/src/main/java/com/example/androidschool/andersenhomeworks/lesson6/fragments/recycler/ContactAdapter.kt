@@ -44,6 +44,7 @@ class ContactAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemContactRvBinding.inflate(inflater, parent, false)

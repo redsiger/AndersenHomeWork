@@ -18,7 +18,7 @@ interface ContactsListener {
 
     fun getContacts(): List<Contact>
 
-    fun searchContact(query: String)
+    fun searchContacts(query: String): List<Contact>
 
     fun addRepositoryListener(listener: RepositoryListener)
 

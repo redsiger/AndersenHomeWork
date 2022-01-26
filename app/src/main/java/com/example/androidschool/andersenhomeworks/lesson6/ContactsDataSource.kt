@@ -14,14 +14,15 @@ interface ContactsDataSource {
     fun getContact(id: Int): Contact
     fun deleteContact(id: Int)
     fun editContact(contact: Contact)
-    fun searchContact(query: String)
+    fun searchContacts(query: String): List<Contact>
 
-    class Local(): ContactsDataSource {
+    class Local: ContactsDataSource {
 
         private val faker = Faker()
 
         private var _contactsList = populateContacts(DEFAULT_LIST_SIZE)
         private val contactList: List<Contact> get() = _contactsList.toList()
+
 
         override fun getDefaultId(): Int = contactList.first().id
 
@@ -44,8 +45,10 @@ interface ContactsDataSource {
             _contactsList = _contactsList.map { if (it.id == contact.id) contact else it }
         }
 
-        override fun searchContact(query: String) {
-            TODO("Not yet implemented")
+        override fun searchContacts(query: String): List<Contact> {
+            return contactList.filter {
+                it.firstName.contains(query, true) || it.lastName.contains(query, true)
+            }
         }
 
         private fun populateContacts(contactsCount: Int): List<Contact> {
